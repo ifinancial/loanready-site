@@ -6,6 +6,8 @@ ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "site")
 DOMAIN = "https://loanready.goifinancial.com"   # change if you host elsewhere
 PHONE = "772-262-5435"
 TEL = "+17722625435"
+BOOK = "https://calendar.app.google/Z1xuxt37AZk3eRVm7"
+BOOK_A = f'href="{BOOK}" target="_blank" rel="noopener"'
 EMAIL = "info@goifinancial.com"
 STREET = "751 Northlake Blvd, Suite 2D"
 CITY, STATE, ZIP = "North Palm Beach", "FL", "33408"
@@ -149,7 +151,7 @@ def nav():
 <a class="skip" href="#main">Skip to content</a>
 <div class="topbar"><div class="wrap">
   <span>{STREET}, {CITY} <span class="hide-sm">· {HOURS}</span></span>
-  <span><a href="tel:{TEL}">Call {PHONE}</a></span>
+  <span><a {BOOK_A}>Book a call</a> <span class="sep">·</span> <a href="tel:{TEL}">Call {PHONE}</a></span>
 </div></div>
 <header class="site-head"><div class="wrap">
   <a class="brand" href="/" aria-label="Loan Ready powered by iFinancial — home">
@@ -194,7 +196,7 @@ def footer():
     <p><a href="/your-rights/">Your Rights &amp; Disclosures</a> · <a href="/privacy-policy/">Privacy Policy</a> · <a href="https://goifinancial.com">goifinancial.com</a> · © {datetime.date.today().year} iFinancial</p>
   </div>
 </div></footer>
-<div class="callbar"><a class="c1" href="tel:{TEL}">Call Now</a><a class="c2" href="/free-loan-score/">Free Loan Score</a></div>
+<div class="callbar"><a class="c1" href="tel:{TEL}">Call</a><a class="c3" {BOOK_A}>Book a Call</a><a class="c2" href="/free-loan-score/">Loan Score</a></div>
 <script>
 (function(){{var b=document.querySelector('.menu-btn'),n=document.getElementById('nav');
 if(b){{b.addEventListener('click',function(){{var o=n.classList.toggle('open');b.setAttribute('aria-expanded',o);}});}}}})();
@@ -277,13 +279,17 @@ def faq_schema(faqs):
     return {"@context": "https://schema.org", "@type": "FAQPage",
             "mainEntity": [{"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs]}
 
-def page_hero(crumbs, h1, lede, eyebrow=None):
+def page_hero(crumbs, h1, lede, eyebrow=None, book_first=False):
     c = " / ".join([f'<a href="{p}">{n}</a>' for n, p in crumbs[:-1]] + [crumbs[-1][0]])
     eb = f'<div class="eyebrow">{eyebrow}</div>' if eyebrow else ""
+    if book_first:
+        btns = f'<div class="btn-row"><a class="btn btn-gold" {BOOK_A}>Book My Call Now</a><a class="btn btn-line" href="tel:{TEL}">Call {PHONE}</a></div>'
+    else:
+        btns = f'<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" {BOOK_A}>Book a Call Now</a><a class="btn btn-call" href="tel:{TEL}">or call {PHONE}</a></div>'
     return f"""<section class="hero page-hero on-dark"><div class="wrap"><div>
 <div class="crumbs">{c}</div>{eb}
 <h1>{h1}</h1><p class="lede">{lede}</p>
-<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" href="tel:{TEL}">Call {PHONE}</a></div>
+{btns}
 </div></div><span class="tri" aria-hidden="true"></span></section>"""
 
 def product_cards():
@@ -343,19 +349,20 @@ def visit_block():
 <dt>Hours</dt><dd>{HOURS}</dd>
 <dt>Phone</dt><dd><a href="tel:{TEL}">{PHONE}</a></dd>
 <dt>Email</dt><dd><a href="mailto:{EMAIL}">{EMAIL}</a></dd>
-</dl><div class="btn-row" style="margin-top:20px"><a class="btn btn-navy" href="https://www.google.com/maps/dir/?api=1&destination={MAPQ}" target="_blank" rel="noopener">Get Directions</a><a class="btn btn-gold" href="/free-loan-score/">Book a Visit</a></div></div></div>
+</dl><div class="btn-row" style="margin-top:20px"><a class="btn btn-navy" href="https://www.google.com/maps/dir/?api=1&destination={MAPQ}" target="_blank" rel="noopener">Get Directions</a><a class="btn btn-gold" {BOOK_A}>Book a Call or Visit</a></div></div></div>
 <iframe class="map" title="Map to Loan Ready, {ADDR_ONE}" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="https://www.google.com/maps?q={MAPQ}&output=embed"></iframe>
 </div></section>"""
 
 def band(h, p):
     return f"""<section class="band on-dark"><div class="wrap"><div><h2>{h}</h2><p>{p}</p></div>
-<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" href="tel:{TEL}">Call {PHONE}</a></div></div></section>"""
+<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" {BOOK_A}>Book a Call Now</a><a class="btn btn-call" href="tel:{TEL}">or call {PHONE}</a></div></div></section>"""
 
 def sidebar(current=None):
     others = "".join(f'<li><a href="/get-loan-ready/{s}/">{n}</a></li>' for s, n, *_ in LOANS if s != current)
     return f"""<aside class="sidebar">
 <div class="side-box side-dark"><h3>Not sure where you stand?</h3><p>Get a free Loan Score. We'll review your credit, books and tax situation against what lenders require.</p>
 <a class="btn btn-gold" style="width:100%" href="/free-loan-score/">Start My Loan Score</a>
+<a class="btn btn-line" style="width:100%;margin-top:10px" {BOOK_A}>Book a Call Now</a>
 <p style="margin:14px 0 0;font-size:.92rem">Or call <a style="color:#fff" href="tel:{TEL}">{PHONE}</a></p></div>
 <div class="side-box"><h3>Get ready for</h3><ul>{others}</ul></div>
 </aside>"""
@@ -368,7 +375,7 @@ home = f"""
 <h1>Turned down for a loan? <em>Let's get you loan ready.</em></h1>
 <p class="lede">Credit repair, bookkeeping and tax planning under one roof, with one goal: getting your file approved. When you're ready, iFinancial takes you to the lender.</p>
 <ul class="hero-points"><li>SBA &amp; bank loans</li><li>Equipment</li><li>Lines of credit</li><li>Real estate</li><li>Mortgages</li></ul>
-<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" href="tel:{TEL}">Call {PHONE}</a></div>
+<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" {BOOK_A}>Book a Call Now</a><a class="btn btn-call" href="tel:{TEL}">or call {PHONE}</a></div>
 </div>
 <div class="score-card" aria-label="Example Loan Score">
 <div class="sc-head"><b>Loan Score</b><small>Sample file</small></div>
@@ -576,7 +583,7 @@ for slug, name, intro, directions in AREAS:
 <section><div class="wrap grid-2">
 <div><div class="eyebrow">Getting here from {name}</div><h2>Our office is close by.</h2><p>{directions}</p>
 <p>Open {HOURS}. Phone and video appointments are available if you'd rather not make the drive.</p>
-<div class="btn-row"><a class="btn btn-navy" href="https://www.google.com/maps/dir/?api=1&destination={MAPQ}" target="_blank" rel="noopener">Directions</a><a class="btn btn-gold" href="/free-loan-score/">Book a Free Loan Score</a></div></div>
+<div class="btn-row"><a class="btn btn-navy" href="https://www.google.com/maps/dir/?api=1&destination={MAPQ}" target="_blank" rel="noopener">Directions</a><a class="btn btn-gold" {BOOK_A}>Book a Call</a></div></div>
 <iframe class="map" title="Map to our office" loading="lazy" src="https://www.google.com/maps?q={MAPQ}&output=embed"></iframe>
 </div></section>
 {band(f"{name} owners: find out what's blocking your approval.", "Free Loan Score. No obligation.")}"""
@@ -636,6 +643,7 @@ body = f"""<section class="hero page-hero on-dark"><div class="wrap grid-2" styl
 <h1>Get your free Loan Score.</h1>
 <p class="lede">Tell us what you're trying to get. We'll review your credit, books and tax picture against what lenders actually require, then show you exactly what to fix.</p>
 <ul class="hero-points" style="flex-direction:column"><li>Takes about 2 minutes</li><li>We'll call within one business day</li><li>Meet in North Palm Beach, by video, or by phone</li><li>Requesting your Loan Score doesn't affect your credit</li></ul>
+<div class="book-box"><b>Rather pick a time right now?</b><span>Choose a slot on our calendar and skip the wait.</span><a class="btn btn-gold" {BOOK_A}>Book a Call Now</a></div>
 <p>Prefer to talk now? <a style="color:#fff;font-weight:700" href="tel:{TEL}">Call {PHONE}</a></p></div>
 <div>{form}</div>
 </div></section>"""
@@ -644,7 +652,7 @@ page("/free-loan-score/", "Free Loan Score — See What's Blocking Your Approval
 
 page("/thank-you/", "Thank You | Loan Ready by iFinancial", "We received your request.",
      page_hero([("Home", "/"), ("Thank you", "/thank-you/")], "Got it. We'll be in touch within one business day.",
-               f"A member of our team will call you to schedule your Loan Score. If you're in a hurry, call {PHONE} ({HOURS})."), noindex=True)
+               f"Don't want to wait for our call? Pick a time on our calendar right now and it's locked in. Or call {PHONE} ({HOURS}).", book_first=True), noindex=True)
 
 # ---------------------------------------------------------------- CONTACT / ABOUT
 body = page_hero([("Home", "/"), ("Visit Us", "/contact/")], "Visit Loan Ready in North Palm Beach.",

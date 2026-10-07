@@ -65,6 +65,9 @@ p{margin:0 0 1em}
 .btn-line{border-color:rgba(255,255,255,.55);color:#fff}
 .btn-line:hover{background:rgba(255,255,255,.08)}
 .btn-navy{background:var(--navy);color:#fff}
+.btn-call{color:#fff;padding:15px 6px;text-decoration:underline;text-underline-offset:4px;font-weight:600}
+.btn-call:hover{transform:none;color:var(--gold)}
+.sep{margin:0 6px;opacity:.6}
 .btn-sm{padding:10px 16px;font-size:.85rem}
 .btn-row{display:flex;flex-wrap:wrap;gap:12px}
 
@@ -205,6 +208,10 @@ section{padding:84px 0}
 .form button{width:100%}
 .hidden{display:none}
 
+.book-box{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:10px;padding:18px 20px;margin:4px 0 20px;display:grid;gap:6px;max-width:30em}
+.book-box b{color:#fff;font-family:var(--head)}
+.book-box .btn{justify-self:start;margin-top:8px}
+
 /* Footer */
 .site-foot{background:var(--ink);color:#9aa6c2;font-size:.92rem;padding:60px 0 100px}
 .site-foot .cols{display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:32px}
@@ -244,9 +251,10 @@ section{padding:84px 0}
   .topbar .hide-sm{display:none}
   .brand img{height:36px}
   .brand .lr{font-size:1.05rem}
-  .callbar{display:grid;grid-template-columns:1fr 1fr;position:fixed;bottom:0;left:0;right:0;z-index:50;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
+  .callbar{display:grid;grid-template-columns:1fr 1.3fr 1.2fr;position:fixed;bottom:0;left:0;right:0;z-index:50;box-shadow:0 -6px 20px rgba(0,0,0,.18)}
   .callbar a{text-align:center;padding:15px 8px;font-family:var(--head);font-weight:700;text-decoration:none;font-size:.95rem}
   .callbar .c1{background:var(--navy);color:#fff}
+  .callbar .c3{background:var(--blue);color:#fff}
   .callbar .c2{background:var(--gold);color:var(--navy)}
   .visit-card dl{grid-template-columns:1fr}
 }
