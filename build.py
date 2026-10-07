@@ -131,6 +131,10 @@ RESULTS = [
 ]
 
 FAQS = [
+    ("Can you get me out of my merchant cash advances?",
+     "Often, yes. It takes a plan, not another advance. We stop the stacking, clean up your bank statements, books and credit, and then move you into a longer-term line, term loan, or SBA loan when your file supports it. How fast depends on your cash flow and how many positions you have open."),
+    ("Will applying with a lot of lenders hurt me?",
+     "It can. Every hard inquiry shows up, and lenders can see who else you applied with. Business loan inquiries generally don't get the rate-shopping protection mortgages and auto loans get. That's why we submit strategically: the right lender, at the right time, with a complete file."),
     ("Can you guarantee my score will go up or that I'll get approved?",
      "No, and no honest company can. The law lets you dispute information that's inaccurate, outdated or can't be verified. Accurate, timely information can stay on your report. What we can promise is a clear plan, real work every cycle, and an honest read on when you're ready to apply."),
     ("When do I pay?",
@@ -161,12 +165,12 @@ def nav():
   <button class="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
   <nav class="nav" id="nav" aria-label="Main">
     <a href="/credit-repair/">Credit Repair</a>
-    <a href="/express-credit-repair/">Express</a>
     <a href="/bookkeeping-tax-planning/">Bookkeeping &amp; Tax</a>
+    <a href="/get-out-of-mca/">Get Out of MCAs</a>
     <a href="/get-loan-ready/">Loan Types</a>
     <a href="/results/">Results</a>
     <a href="/contact/">Visit Us</a>
-    <a class="btn btn-gold btn-sm" href="/free-loan-score/">Free Loan Score</a>
+    <a class="btn btn-gold btn-sm" href="/bankable-check/">Am I Bankable?</a>
   </nav>
 </div></header>"""
 
@@ -186,6 +190,9 @@ def footer():
       <li><a href="/express-credit-repair/">Express Repair</a></li>
       <li><a href="/bookkeeping-tax-planning/">Bookkeeping &amp; Tax Planning</a></li>
       <li><a href="/free-loan-score/">Free Loan Score</a></li>
+      <li><a href="/bankable-check/">60-Second Bankable Check</a></li>
+      <li><a href="/get-out-of-mca/">Get Out of MCAs</a></li>
+      <li><a href="/lending-has-changed/">How Lending Has Changed</a></li>
       <li><a href="/results/">Client Results</a></li>
     </ul></div>
     <div><h4>Get Ready For</h4><ul>{loans}<li><a href="/get-loan-ready/">All loan types</a></li></ul></div>
@@ -355,7 +362,7 @@ def visit_block():
 
 def band(h, p):
     return f"""<section class="band on-dark"><div class="wrap"><div><h2>{h}</h2><p>{p}</p></div>
-<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" {BOOK_A}>Book a Call Now</a><a class="btn btn-call" href="tel:{TEL}">or call {PHONE}</a></div></div></section>"""
+<div class="btn-row"><a class="btn btn-gold" href="/bankable-check/">Am I Bankable?</a><a class="btn btn-line" {BOOK_A}>Book a Call Now</a><a class="btn btn-call" href="tel:{TEL}">or call {PHONE}</a></div></div></section>"""
 
 def sidebar(current=None):
     others = "".join(f'<li><a href="/get-loan-ready/{s}/">{n}</a></li>' for s, n, *_ in LOANS if s != current)
@@ -367,15 +374,58 @@ def sidebar(current=None):
 <div class="side-box"><h3>Get ready for</h3><ul>{others}</ul></div>
 </aside>"""
 
+
+LANDSCAPE = [
+    ("Lenders see who else you applied with.",
+     "Every hard inquiry shows on your personal and business credit. Cash advances leave UCC filings. Your bank statements show every payment to another lender. In the short-term world, funders share data with each other. Spray applications around and the next lender sees all of it."),
+    ("Where and when you submit matters.",
+     "Apply the week after a bad deposit month, before your taxes are filed, or with five lenders at once, and you can get declined by people who would have said yes a month later. Business loan inquiries generally don't get the rate-shopping protection that mortgages and auto loans do."),
+    ("MCAs are getting stricter.",
+     "What we're seeing: many advance funders now look for credit in the 620s and up, more documents, and tighter rules on stacking. That's how banks used to underwrite. If MCA money is getting harder to get, bank money is out of reach without a plan."),
+    ("Taxes and borrowing power pull against each other.",
+     "Write off everything and you save on taxes, but your return shows a business that can't afford a loan. Proper tax planning finds the balance. You keep more from Uncle Sam and still show the income a lender needs to see."),
+]
+
+def landscape_cards():
+    return '<div class="grid-2 land">' + "".join(
+        f'<div class="land-card"><span class="land-n">0{i+1}</span><h3>{h}</h3><p>{p}</p></div>'
+        for i, (h, p) in enumerate(LANDSCAPE)) + "</div>"
+
+def ladder_block():
+    rungs = [
+        ("Today", "Short-term money", "MCA or bridge funding if you need it now. Structured so it doesn't trap you."),
+        ("Months 1–6", "Fix the footprint", "Credit profile, books, bank statements, and tax plan. No more stacking."),
+        ("Months 6–12", "Lines & term loans", "Lower-cost lines of credit and term loans that pay off the expensive money."),
+        ("Year 1+", "Bank & SBA", "Long-term bank and SBA financing. Then the next round, and the one after that."),
+    ]
+    return '<div class="ladder">' + "".join(
+        f'<div class="rung"><span class="when">{w}</span><h3>{h}</h3><p>{p}</p></div>' for w, h, p in rungs) + "</div>"
+
+REVIEWS = [
+    ("He guided me through the SBA process to secure crucial funding for my business when no one else could.", "Peter C.", "CFO"),
+    ("They fixed my credit, got me funding, and made me feel like I made friends.", "Alex A.", "Finance executive"),
+    ("They were able to get my credit from a 600 to over 700 and was able to secure me financing at low rates for my business.", "Coco R.", "Business owner"),
+]
+
+def reviews_block():
+    return '<div class="grid-3">' + "".join(
+        f'<figure class="review"><div class="stars" aria-label="5 stars">★★★★★</div><blockquote>“{q}”</blockquote><figcaption><b>{n}</b> · {r}</figcaption></figure>'
+        for q, n, r in REVIEWS) + "</div>"
+
+def check_teaser(dark=False):
+    return f"""<div class="teaser"><div><div class="eyebrow">Free · 60 seconds</div><h3>Are you bankable right now?</h3>
+<p>Answer 8 quick questions. You'll see how a bank would read your file, and exactly what's holding you back.</p></div>
+<a class="btn btn-gold" href="/bankable-check/">Take the Bankable Check</a></div>"""
+
 # ---------------------------------------------------------------- HOME
 home = f"""
 <section class="hero on-dark"><div class="wrap">
 <div>
 <div class="eyebrow">North Palm Beach · Palm Beach County</div>
 <h1>Turned down for a loan? <em>Let's get you loan ready.</em></h1>
-<p class="lede">Credit repair, bookkeeping and tax planning under one roof, with one goal: getting your file approved. When you're ready, iFinancial takes you to the lender.</p>
-<ul class="hero-points"><li>SBA &amp; bank loans</li><li>Equipment</li><li>Lines of credit</li><li>Real estate</li><li>Mortgages</li></ul>
-<div class="btn-row"><a class="btn btn-gold" href="/free-loan-score/">Get My Free Loan Score</a><a class="btn btn-line" {BOOK_A}>Book a Call Now</a><a class="btn btn-call" href="tel:{TEL}">or call {PHONE}</a></div>
+<p class="lede"><b style="color:#fff">We fix your financial footprint and credit profile so it's bankable.</b> Credit repair, bookkeeping and tax planning under one roof. Then iFinancial funds you, again and again, as your business grows.</p>
+<ul class="hero-points"><li>Out of MCAs</li><li>Into bank &amp; SBA</li><li>Lines of credit</li><li>Equipment</li><li>Real estate</li></ul>
+<div class="btn-row"><a class="btn btn-gold" href="/bankable-check/">Am I Bankable? (60 sec)</a><a class="btn btn-line" {BOOK_A}>Book a Call Now</a><a class="btn btn-call" href="tel:{TEL}">or call {PHONE}</a></div>
 </div>
 <div class="score-card" aria-label="Example Loan Score">
 <div class="sc-head"><b>Loan Score</b><small>Sample file</small></div>
@@ -388,41 +438,65 @@ home = f"""
 </div>
 </div><span class="tri" aria-hidden="true"></span></section>
 
+
+<section class="alt"><div class="wrap">
+<div class="section-head"><div class="eyebrow">Lending has changed</div>
+<h2>Banks see everything now. Your file has to be ready before you apply.</h2>
+<p>Getting a bank loan is harder than it's been in years. Lenders check with each other. Short-term funders are tightening up. One wrong application can follow you for months. Here's what changed.</p></div>
+{landscape_cards()}
+<div class="btn-row" style="margin-top:28px"><a class="btn btn-navy" href="/lending-has-changed/">How to apply strategically →</a><a class="btn btn-gold" href="/bankable-check/">Am I bankable right now?</a></div>
+</div></section>
+
 <section><div class="wrap">
+<div class="section-head"><div class="eyebrow">Not one loan. A lending relationship.</div>
+<h2>We take you from MCAs to bank and SBA money, and stay with you.</h2>
+<p>Most funders give you money once and disappear. We structure every round for the loan you need today <i>and</i> the one you'll need next year. Each step lowers your cost of capital.</p></div>
+{ladder_block()}
+<div class="btn-row" style="margin-top:28px"><a class="btn btn-gold" href="/get-out-of-mca/">Get out of MCAs</a><a class="btn btn-line dark-line" {BOOK_A}>Book a Call Now</a></div>
+</div></section>
+
+<section class="alt"><div class="wrap">
 <div class="section-head"><div class="eyebrow">Three ways we get you ready</div>
 <h2>Fix the file. Then get funded.</h2>
 <p>Banks rarely say no because of one thing. It's usually the credit report, the books, and the tax returns not telling the same story. We fix all three.</p></div>
 {product_cards()}
 </div></section>
 
-<section class="alt"><div class="wrap">
+<section><div class="wrap">
 <div class="section-head"><div class="eyebrow">Every type of loan</div>
 <h2>What are you trying to get approved for?</h2>
 <p>Each lender looks at something different. Pick your loan and see what they check, where people get stuck, and how we fix it.</p></div>
 {loan_tiles()}
 </div></section>
 
-<section><div class="wrap">
+<section class="alt"><div class="wrap">
 <div class="section-head"><div class="eyebrow">How it works</div><h2>From "denied" to "approved" in four steps.</h2></div>
 <div class="steps">
 <div class="step"><h3>Free Loan Score</h3><p>We review your credit, financials and tax returns against real lender guidelines. You see exactly what's in the way.</p></div>
 <div class="step"><h3>Fix what's blocking you</h3><p>Disputes on inaccurate items, bookkeeping catch-up, and tax planning. Done by our in-house team.</p></div>
 <div class="step"><h3>Build the loan file</h3><p>Statements, returns, and a credit report a lender can say yes to, organized into one package.</p></div>
-<div class="step"><h3>Get funded through iFinancial</h3><p>We take your file to lenders that fit: SBA, banks, equipment, asset-based, real estate, and short-term funding.</p></div>
+<div class="step"><h3>Get funded through iFinancial</h3><p>We submit strategically, to the right lender at the right time. Then we keep building toward the next, cheaper round.</p></div>
 </div>
+<div style="margin-top:36px">{check_teaser()}</div>
 </div></section>
 
-<section class="alt"><div class="wrap">
+<section><div class="wrap">
 <div class="section-head"><div class="eyebrow">Real clients, real reports</div><h2>Recent results.</h2>
 <p>Scores taken from client progress reports, shared with permission. Initials only.</p></div>
 {result_cards()}
 <p class="fineprint" style="margin-top:16px">Individual results. Scores vary by bureau and scoring model. These are not typical or guaranteed outcomes. <a href="/results/">See all results →</a></p>
 </div></section>
 
+<section class="alt"><div class="wrap">
+<div class="section-head"><div class="eyebrow">What clients say</div><h2>Funded, and still working with us.</h2></div>
+{reviews_block()}
+<p class="fineprint" style="margin-top:14px">From client reviews of iFinancial.</p>
+</div></section>
+
 <section><div class="wrap grid-2">
 <div><div class="eyebrow">Why it matters</div><h2>A weak file costs you thousands, even when you get approved.</h2>
 <p>Lenders price risk. A lower score, messy books, or tax returns that show too little income push you into a higher rate tier. The work you do before you apply often pays for itself on the first loan.</p>
-<a class="btn btn-gold" href="/free-loan-score/">See where I stand</a></div>
+<a class="btn btn-gold" href="/bankable-check/">See where I stand</a></div>
 <div>{cost_block()}</div>
 </div></section>
 
@@ -432,7 +506,7 @@ home = f"""
 </div></section>
 
 {visit_block()}
-{band("Find out what's standing between you and an approval.", "The Loan Score is free. You'll leave knowing exactly what to fix and how long it should take.")}
+{band("Don't get stuck in this economy. Be ready for tomorrow.", "Find out in 60 seconds how a bank would read your file. Then let's fix what's in the way.")}
 """
 page("/", "Credit Repair & Loan Readiness in North Palm Beach, FL | Loan Ready by iFinancial",
      "Credit repair, bookkeeping and tax planning in North Palm Beach that gets you ready for SBA, bank, equipment, real estate and mortgage loans. Free Loan Score. Call 772-262-5435.",
@@ -496,6 +570,9 @@ PRODUCT_DETAIL = {
  "body": """
 <h2>Why underwriters care about your books</h2>
 <p>The fastest way to get turned down is a P&amp;L that doesn't match your tax return, or a tax return that shows almost no profit. Lenders size your loan off documented income. If the books are behind or every possible expense is written off, the bank sees a business that can't afford the payment.</p>
+<h2>Save on taxes without killing your borrowing power</h2>
+<p>Most owners are told to write off everything. That saves money in April, and then the bank sees a business that barely breaks even. Danny plans your taxes with your next loan in mind. You legally keep more from Uncle Sam, and your returns still show the income an underwriter needs.</p>
+<p>The timing matters too. We plan when to file, when to take distributions, and when to apply, so the documents a lender pulls tell the strongest true story about your business.</p>
 <h2>What's included</h2>
 <ul>
 <li><b>Monthly bookkeeping.</b> Categorized transactions, bank and credit card reconciliations, and a monthly close.</li>
@@ -613,6 +690,7 @@ form = f"""
 <form class="form" name="loan-score" method="POST" action="/thank-you/" data-netlify="true" netlify-honeypot="company_website">
 <input type="hidden" name="form-name" value="loan-score">
 <p class="hidden"><label>Leave this empty <input name="company_website"></label></p>
+<input type="hidden" name="bankable_check" id="f-check" value="">
 <div class="row">
 <div class="field"><label for="f-name">Full name</label><input id="f-name" name="name" autocomplete="name" required></div>
 <div class="field"><label for="f-phone">Phone</label><input id="f-phone" name="phone" type="tel" autocomplete="tel" required></div>
@@ -637,7 +715,8 @@ form = f"""
 <div class="field"><label for="f-notes">Anything else we should know?</label><textarea id="f-notes" name="notes" rows="3"></textarea></div>
 <label class="consent"><input type="checkbox" name="consent" value="yes" required> I agree that iFinancial may contact me by phone, text or email about my request. Consent isn't a condition of purchase. Message and data rates may apply. Reply STOP to opt out.</label>
 <button class="btn btn-gold" type="submit">Get My Free Loan Score</button>
-</form>"""
+</form>
+<script>(function(){{var q=new URLSearchParams(location.search);var c=q.get('check');if(c){{var f=document.getElementById('f-check');if(f)f.value=c+' / 18 ('+(q.get('tier')||'')+')';}}}})();</script>"""
 body = f"""<section class="hero page-hero on-dark"><div class="wrap grid-2" style="grid-template-columns:1fr 1fr;align-items:start">
 <div><div class="crumbs"><a href="/">Home</a> / Free Loan Score</div><div class="eyebrow">Free · No obligation</div>
 <h1>Get your free Loan Score.</h1>
@@ -653,6 +732,148 @@ page("/free-loan-score/", "Free Loan Score — See What's Blocking Your Approval
 page("/thank-you/", "Thank You | Loan Ready by iFinancial", "We received your request.",
      page_hero([("Home", "/"), ("Thank you", "/thank-you/")], "Got it. We'll be in touch within one business day.",
                f"Don't want to wait for our call? Pick a time on our calendar right now and it's locked in. Or call {PHONE} ({HOURS}).", book_first=True), noindex=True)
+
+
+# ---------------------------------------------------------------- LENDING HAS CHANGED
+body = page_hero([("Home", "/"), ("Lending Has Changed", "/lending-has-changed/")],
+                 "Bank lending has changed. Here's how to get approved anyway.",
+                 "Banks check with other lenders. Short-term funders are tightening. Where, when and how you apply now decides whether you get a yes.",
+                 eyebrow="The 2026 lending landscape") + f"""
+<section><div class="wrap layout"><article class="content">
+<h2>Lenders can see more than you think</h2>
+<p>When you apply for business financing, the lender doesn't just look at your score. They see:</p>
+<ul>
+<li><b>Every recent hard inquiry</b> on your personal credit, and often your business credit too. They know who else you've applied with and how recently.</li>
+<li><b>UCC filings.</b> Most merchant cash advances file a UCC lien. It's public, and lenders check it.</li>
+<li><b>Your bank statements.</b> Daily and weekly debits to other funders, NSFs, negative-balance days, and deposit swings are all right there.</li>
+<li><b>Shared industry data.</b> In the short-term funding world, funders share information about who has funded whom and how those deals performed.</li>
+</ul>
+<p>So "apply everywhere and see who says yes" is now the fastest way to get told no.</p>
+
+<h2>Strategic submission: where, when, and how</h2>
+<p><b>Where.</b> Every lender has its own box: credit tiers, industries, time in business, revenue, and how much existing debt they'll tolerate. We match your file to lenders whose guidelines you already meet. One well-matched submission beats ten random ones.</p>
+<p><b>When.</b> Timing changes the picture. That means after a strong deposit month, after your tax return is filed and shows the right income, after disputed items have cleared, and before new inquiries pile up. A few weeks can turn a decline into an approval.</p>
+<p><b>How.</b> A complete, consistent file: credit report, bank statements, tax returns and financial statements that all tell the same story. Underwriters decline files with holes because holes look like risk.</p>
+
+<div class="aside-cta"><h3>Find out if you're ready before a lender does.</h3><p style="margin:0 0 14px">Our 60-second Bankable Check shows you how a bank would read your file.</p>
+<div class="btn-row"><a class="btn btn-gold" href="/bankable-check/">Take the Bankable Check</a><a class="btn btn-navy" {BOOK_A}>Book a Call Now</a></div></div>
+
+<h2>MCAs are underwriting like banks used to</h2>
+<p>Merchant cash advances used to be the easy yes. That's changing. In our experience, many funders now want credit in the 620s and up, more documentation, cleaner bank statements, and stricter limits on stacking. If short-term money is getting harder to get, waiting until you're desperate is the most expensive plan there is.</p>
+
+<h2>Taxes vs. borrowing power</h2>
+<p>Lenders size your loan off documented income. Writing off everything saves on taxes, but it can make your business look like it can't afford a payment. Proper tax planning balances both. You keep more from Uncle Sam and still qualify for the money you need. <a href="/bookkeeping-tax-planning/">See how our tax planning works →</a></p>
+
+<h2>What "bankable" actually means</h2>
+<ul class="checks">
+<li>A clean, strong credit profile, with inaccurate items disputed and utilization under control</li>
+<li>Few recent inquiries and no unexplained new debt</li>
+<li>Bank statements without NSFs, negative days or stacked daily payments</li>
+<li>Current books that tie to your tax returns</li>
+<li>Tax returns that show enough income to cover the new payment</li>
+<li>A plan for which lender comes first, and which comes next</li>
+</ul>
+<p>That's what we build. <b>We fix your financial footprint and credit profile so it's bankable.</b> Then iFinancial submits it, strategically.</p>
+<p class="fineprint">Lending criteria vary by lender and change over time. Descriptions here reflect general industry practice and our own experience, not any specific lender's guidelines.</p>
+</article>{sidebar()}</div></section>
+{band("Don't get stuck in this economy. Be ready for tomorrow.", "Know where you stand before you apply anywhere.")}"""
+page("/lending-has-changed/", "Why Bank Loans Are Harder to Get in 2026, and How to Get Approved | Loan Ready",
+     "Banks check with other lenders and see who you applied with. MCAs are tightening. How to submit strategically, and how Loan Ready by iFinancial makes your file bankable.",
+     body, [breadcrumb_schema([("Home", "/"), ("Lending Has Changed", "/lending-has-changed/")])], priority="0.9")
+
+# ---------------------------------------------------------------- GET OUT OF MCA
+mca_faqs = [
+    ("Can an SBA or bank loan pay off my MCA?", "In some cases, yes. Banks and the SBA can refinance existing business debt when the numbers and the file support it. Lenders look closely at why the advances were taken and whether your cash flow covers the new payment. We get the file to that point."),
+    ("What if I have three or four positions open?", "It's common, and it's fixable, but not overnight. Step one is to stop adding positions. Then we work out the order to retire them and what the bank needs to see from your statements before we submit."),
+    ("Do I have to stop using MCAs completely?", "Not on day one. If you need capital now, iFinancial can help structure it so it doesn't trap you. The goal is that every round costs less than the last, until you're in bank and SBA money."),
+]
+body = page_hero([("Home", "/"), ("Get Out of MCAs", "/get-out-of-mca/")],
+                 "Stuck in MCAs? Let's get you into bank and SBA money.",
+                 "Daily payments eating your cash flow? We'll stop the stacking, rebuild your file, and move you to long-term financing. Then we keep funding you as you grow.",
+                 eyebrow="MCA to bank & SBA") + f"""
+<section><div class="wrap layout"><article class="content">
+<h2>The MCA trap</h2>
+<p>It starts with one advance to cover a slow month. Then the daily payments squeeze cash flow, so you take a second. Then a third. Each one makes your bank statements look worse, and banks look at those statements. Soon the only people who will fund you are the people keeping you stuck.</p>
+
+<h2>How we get you out</h2>
+<ol>
+<li><b>Stop the bleeding.</b> No new positions. We review every advance, its payment and its balance, and map the order to retire them.</li>
+<li><b>Fix the footprint.</b> Credit profile repair, bookkeeping caught up, and bank statements cleaned up over the months a bank will review.</li>
+<li><b>Tax plan for the loan.</b> Your next return needs to show the income that supports a bank payment. Danny plans for that, without overpaying Uncle Sam.</li>
+<li><b>Step down your cost of capital.</b> Move from advances to a line of credit or term loan, then to bank and SBA financing. Every round should cost less than the last.</li>
+<li><b>Stay funded.</b> We don't fund you once and disappear. We're with you for the next round, and the one after that.</li>
+</ol>
+{ladder_block()}
+
+<div class="aside-cta"><h3>How deep are you in?</h3><p style="margin:0 0 14px">Take the 60-second Bankable Check, or book a call and bring your MCA statements. We'll map your way out.</p>
+<div class="btn-row"><a class="btn btn-gold" {BOOK_A}>Book a Call Now</a><a class="btn btn-navy" href="/bankable-check/">Take the Bankable Check</a></div></div>
+
+<h2>Common questions</h2>{faq_block(mca_faqs)}
+<p class="fineprint">Refinancing depends on lender approval, your cash flow and your full financial profile. Not every advance can be refinanced into bank or SBA debt.</p>
+</article>{sidebar()}</div></section>
+{band("Every month in an MCA costs you. Let's plan your way out.", "Book a call today. Bring your statements, and leave with a plan.")}"""
+page("/get-out-of-mca/", "Get Out of Merchant Cash Advances, Into Bank & SBA Loans | Loan Ready by iFinancial",
+     "Stuck in stacked MCAs? Loan Ready by iFinancial fixes your credit profile, books, bank statements and tax plan so you can move to bank and SBA financing. North Palm Beach, FL.",
+     body, [faq_schema(mca_faqs), breadcrumb_schema([("Home", "/"), ("Get Out of MCAs", "/get-out-of-mca/")])], priority="0.9")
+
+# ---------------------------------------------------------------- BANKABLE CHECK (interactive)
+QUIZ = [
+    ("What's your credit score, roughly?", [("720 or higher", 3, ""), ("680–719", 2, ""), ("620–679", 1, "Your score is in a range where many banks decline or price you high."), ("Under 620 / not sure", 0, "Your score is below what most banks, and now many MCA funders, accept.")]),
+    ("Hard inquiries in the last 12 months?", [("0–3", 2, ""), ("4–8", 1, "Lenders can see you've been shopping around."), ("9 or more", 0, "A long trail of applications tells lenders others have said no.")]),
+    ("Open MCAs or daily/weekly payments to funders?", [("None", 3, ""), ("One", 1, "An open advance shows on your statements and often as a UCC filing."), ("Two or more", 0, "Stacked advances are one of the biggest red flags for banks.")]),
+    ("How long have you been in business?", [("2+ years", 2, ""), ("1–2 years", 1, "Many bank and SBA lenders prefer 2+ years of history."), ("Under 1 year", 0, "Under a year limits you to a narrow set of lenders.")]),
+    ("Are your books current, and do they match your tax returns?", [("Yes", 2, ""), ("Behind or not sure", 1, "Books that don't tie to your returns stall underwriting."), ("No bookkeeping", 0, "Without financial statements, bank and SBA loans are off the table.")]),
+    ("What did your last business tax return show?", [("A healthy profit", 2, ""), ("A small profit", 1, "Thin profit on paper limits how much a bank will lend."), ("A loss", 0, "A loss on your return usually means a decline, even with strong revenue.")]),
+    ("Late payments or collections in the last 2 years?", [("None", 2, ""), ("1–2", 1, "Recent late payments or collections drag your profile down."), ("3 or more", 0, "Multiple recent derogatory items will stop most bank approvals.")]),
+    ("NSFs or negative-balance days in the last 3 months?", [("None", 2, ""), ("A few", 1, "Underwriters count NSFs and negative days on your statements."), ("Frequent", 0, "Frequent NSFs tell a lender cash flow can't support a payment.")]),
+]
+qhtml = ""
+for i, (q, opts) in enumerate(QUIZ):
+    o = "".join(f'<label class="opt"><input type="radio" name="q{i}" value="{pts}" data-flag="{flag}" required><span>{t}</span></label>' for t, pts, flag in opts)
+    qhtml += f'<fieldset class="q"><legend><span class="qn">{i+1}/8</span>{q}</legend><div class="opts">{o}</div></fieldset>'
+
+body = f"""<section class="hero page-hero on-dark"><div class="wrap"><div>
+<div class="crumbs"><a href="/">Home</a> / Bankable Check</div><div class="eyebrow">Free · 60 seconds · No credit pull</div>
+<h1>Are you bankable right now?</h1>
+<p class="lede">Answer 8 questions the way a bank underwriter would look at your file. You'll get your score, your red flags, and what to fix first.</p>
+</div></div><span class="tri" aria-hidden="true"></span></section>
+<section><div class="wrap" style="max-width:860px">
+<form id="quiz" class="quiz" novalidate>{qhtml}
+<p class="quiz-err" id="quiz-err" hidden>Answer all 8 questions to see your result.</p>
+<button type="submit" class="btn btn-gold">See My Result</button></form>
+<div id="result" class="result-box" hidden>
+<div class="r-top"><div class="r-score"><b id="r-num">0</b><span>/ 18</span></div><div><div class="eyebrow" id="r-tier">Result</div><h2 id="r-head"></h2><p id="r-text"></p></div></div>
+<div id="r-flags-wrap"><h3>What a lender would flag</h3><ul id="r-flags" class="flags"></ul></div>
+<div class="btn-row" style="margin-top:22px"><a class="btn btn-gold" {BOOK_A}>Book My Call Now</a><a class="btn btn-navy" id="r-form" href="/free-loan-score/">Get My Full Loan Score</a><a class="btn btn-call dark" href="tel:{TEL}">or call {PHONE}</a></div>
+<p class="fineprint" style="margin-top:16px">This is an educational self-check, not a credit decision or a guarantee of approval. Every lender has its own guidelines.</p>
+</div>
+</div></section>
+<script>
+(function(){{
+var f=document.getElementById('quiz'),box=document.getElementById('result'),err=document.getElementById('quiz-err');
+var T={{
+ high:["Bankable: be strategic","You may be ready for bank or SBA financing.","Don't waste it. One wrong application can cost you the approval. Let us match you to the right lender and submit at the right time."],
+ mid:["Close: fixable","A few things stand between you and a bank yes.","This is exactly what we fix. Most files like yours need a focused plan of a few months, not years."],
+ low:["Not yet: let's build the path","Right now, banks would likely say no.","That's not the end. It's the starting point. We'll fix your footprint and step you from expensive money to bank and SBA financing."]
+}};
+f.addEventListener('submit',function(e){{
+ e.preventDefault();var total=0,flags=[],ok=true;
+ for(var i=0;i<8;i++){{var c=f.querySelector('input[name=q'+i+']:checked');if(!c){{ok=false;break;}}total+=+c.value;if(c.dataset.flag)flags.push(c.dataset.flag);}}
+ if(!ok){{err.hidden=false;return;}} err.hidden=true;
+ var k=total>=15?'high':(total>=9?'mid':'low'),t=T[k];
+ document.getElementById('r-num').textContent=total;document.getElementById('r-tier').textContent=t[0];
+ document.getElementById('r-head').textContent=t[1];document.getElementById('r-text').textContent=t[2];
+ var ul=document.getElementById('r-flags');ul.innerHTML='';flags.forEach(function(x){{var li=document.createElement('li');li.textContent=x;ul.appendChild(li);}});
+ document.getElementById('r-flags-wrap').hidden=!flags.length;
+ document.getElementById('r-form').href='/free-loan-score/?check='+total+'&tier='+encodeURIComponent(t[0]);
+ box.hidden=false;box.scrollIntoView({{behavior:'smooth',block:'start'}});
+}});
+}})();
+</script>
+{band("Don't get stuck in this economy. Be ready for tomorrow.", "Talk to us before you talk to a bank.")}"""
+page("/bankable-check/", "Am I Bankable? Free 60-Second Business Loan Readiness Check | Loan Ready",
+     "Answer 8 questions and see how a bank would read your file: credit, inquiries, MCAs, books, taxes and bank statements. Free, no credit pull. Loan Ready by iFinancial.",
+     body, priority="0.9")
 
 # ---------------------------------------------------------------- CONTACT / ABOUT
 body = page_hero([("Home", "/"), ("Visit Us", "/contact/")], "Visit Loan Ready in North Palm Beach.",
