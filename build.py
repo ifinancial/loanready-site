@@ -424,7 +424,7 @@ CASES = [
      ["6 loans over 6 months", "Every MCA paid off", "Opened a new division now doing $2M+ a year"]),
     ("DMLPA", "From MCAs to 3 credit lines",
      "High-interest credit cards, MCA debt and other business debt holding the credit profile down.",
-     ["Credit profile repaired", "High-interest cards and MCA debt paid off", "3 business lines of credit open", "Working toward an SBA loan"]),
+     ["Credit profile repaired", "High-interest cards and MCA debt paid off", "3 business lines of credit open", "Working on a 10-year SBA loan"]),
     ("Burning Hearts Tattoo", "2 MCAs paid off early",
      "Two merchant cash advances and a credit profile that kept them out of bank money.",
      ["Credit repair completed", "Both MCAs paid off early", "Saved on the interest payback"]),

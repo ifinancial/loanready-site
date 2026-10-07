@@ -184,7 +184,7 @@ CASES_ES = [
     ("Ragtop", "6 préstamos en 6 meses", "Enterrado en MCA y deuda de alto interés, con pagos diarios que se comían el flujo de caja.",
      ["6 préstamos en 6 meses", "Todos los MCA pagados", "Abrió una nueva división que hoy factura más de $2M al año"]),
     ("DMLPA", "De MCA a 3 líneas de crédito", "Tarjetas de alto interés, deuda de MCA y otras deudas del negocio hundiendo su perfil de crédito.",
-     ["Perfil de crédito reparado", "Tarjetas de alto interés y MCA pagados", "3 líneas de crédito comerciales abiertas", "En camino a un préstamo SBA"]),
+     ["Perfil de crédito reparado", "Tarjetas de alto interés y MCA pagados", "3 líneas de crédito comerciales abiertas", "Tramitando un préstamo SBA a 10 años"]),
     ("Burning Hearts Tattoo", "2 MCA pagados antes de tiempo", "Dos adelantos de efectivo y un perfil de crédito que no les dejaba llegar al banco.",
      ["Reparación de crédito completada", "Ambos MCA pagados antes de tiempo", "Ahorro en el costo total de devolución"]),
 ]
