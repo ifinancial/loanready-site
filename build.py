@@ -4,8 +4,8 @@ import json, os, datetime
 
 ROOT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "site")
 DOMAIN = "https://loanready.goifinancial.com"   # change if you host elsewhere
-PHONE = "866-763-8634"
-TEL = "+18667638634"
+PHONE = "772-262-5435"
+TEL = "+17722625435"
 EMAIL = "info@goifinancial.com"
 STREET = "751 Northlake Blvd, Suite 2D"
 CITY, STATE, ZIP = "North Palm Beach", "FL", "33408"
@@ -428,7 +428,7 @@ home = f"""
 {band("Find out what's standing between you and an approval.", "The Loan Score is free. You'll leave knowing exactly what to fix and how long it should take.")}
 """
 page("/", "Credit Repair & Loan Readiness in North Palm Beach, FL | Loan Ready by iFinancial",
-     "Credit repair, bookkeeping and tax planning in North Palm Beach that gets you ready for SBA, bank, equipment, real estate and mortgage loans. Free Loan Score. Call 866-763-8634.",
+     "Credit repair, bookkeeping and tax planning in North Palm Beach that gets you ready for SBA, bank, equipment, real estate and mortgage loans. Free Loan Score. Call 772-262-5435.",
      home, [faq_schema(FAQS)], priority="1.0")
 
 # ---------------------------------------------------------------- PRODUCT PAGES
@@ -677,7 +677,7 @@ rights = page_hero([("Home", "/"), ("Your Rights", "/your-rights/")], "Your righ
 <h2>Free credit reports</h2>
 <p>You can get free credit reports from all three bureaus at AnnualCreditReport.com.</p>
 <h2>Questions or complaints</h2>
-<p>Contact us at <a href="mailto:info@goifinancial.com">info@goifinancial.com</a> or 866-763-8634. You can also contact the Consumer Financial Protection Bureau, the Federal Trade Commission, or the Florida Attorney General.</p>
+<p>Contact us at <a href="mailto:info@goifinancial.com">info@goifinancial.com</a> or 772-262-5435. You can also contact the Consumer Financial Protection Bureau, the Federal Trade Commission, or the Florida Attorney General.</p>
 </article></div></section>"""
 page("/your-rights/", "Your Rights & Disclosures | Loan Ready by iFinancial",
      "Consumer rights and disclosures for Loan Ready by iFinancial credit repair services.", rights, priority="0.3")

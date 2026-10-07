@@ -29,7 +29,7 @@ Your main goifinancial.com WordPress site does not change.
 - [ ] Have your attorney review the billing language (paid after work is performed) and the contract against CROA, Florida Ch. 817 Part III, and the Telemarketing Sales Rule.
 - [ ] Confirm the $10,000 Florida credit service organization bond is in place.
 - [ ] Remove "NO ONE GETS DENIED!" and "guaranteed success" from goifinancial.com. Guarantee language is a regulator red flag in credit repair.
-- [ ] Consider a local 561 phone number for the site and Google profile. It helps local rankings and call-through. The main site also lists a different number (866-232-2858) in its FAQ, so use one number everywhere.
+- [ ] Use 772-262-5435 everywhere: on goifinancial.com (its FAQ still lists 866-232-2858), the Google profile, and social pages. Matching phone numbers help local rankings.
 - [ ] Add real photos of the office, signage and team to the Visit Us page.
 
 ## Making changes
