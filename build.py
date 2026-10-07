@@ -17,6 +17,25 @@ MAPQ = "751+Northlake+Blvd+Suite+2D,+North+Palm+Beach,+FL+33408"
 TODAY = datetime.date.today().isoformat()
 
 PAGES = []  # (path, priority)
+LANG = "en"
+CURRENT = "/"
+# English path -> Spanish path (drives hreflang + the language switch)
+ES_MAP = {
+    "/": "/es/",
+    "/credit-repair/": "/es/reparacion-de-credito/",
+    "/express-credit-repair/": "/es/reparacion-express/",
+    "/bookkeeping-tax-planning/": "/es/contabilidad-e-impuestos/",
+    "/get-out-of-mca/": "/es/salir-de-mca/",
+    "/lending-has-changed/": "/es/como-cambiaron-los-prestamos/",
+    "/bankable-check/": "/es/soy-bancable/",
+    "/free-loan-score/": "/es/evaluacion-gratis/",
+    "/get-loan-ready/": "/es/prestamos/",
+    "/contact/": "/es/contacto/",
+    "/loan-calculator/": "/es/calculadora/",
+    "/your-rights/": "/es/sus-derechos/",
+    "/thank-you/": "/es/gracias/",
+}
+EN_MAP = {v: k for k, v in ES_MAP.items()}
 
 # ---------------------------------------------------------------- data
 PRODUCTS = [
@@ -32,6 +51,7 @@ PRODUCTS = [
         "slug": "express-credit-repair", "name": "Express Repair", "short": "Express Repair",
         "price": "$1,500", "per": "", "extra": "+ $300 per deleted item",
         "note": "Rounds typically run 15–30 days. Billed after the work is done. The $300 applies only to items actually deleted.",
+        "offer": "We fund your deal? Your $1,500 comes back.",
         "blurb": "For owners with a loan on the table. A concentrated round aimed at the items blocking the approval.",
         "points": ["Priority file — worked first", "Targeted at the items a lender flagged",
                    "You pay per deletion, not per letter", "Post-round report on all three bureaus", "Hand-off to iFinancial funding when ready"],
@@ -55,7 +75,7 @@ LOANS = [
       "Any past government debt, defaults, or open tax liens", "A clear use of funds"],
      ["Tax returns that show too little income because every expense was written off", "Late payments or collections on one owner's personal report",
       "Books that don't match the tax returns", "Missing interim financials"],
-     "We clean up the personal credit side, rebuild the books so they tie to your returns, and Danny's tax planning makes sure next year's return shows the income a lender needs to see. When the file is ready, iFinancial takes it to SBA lenders who match your profile."),
+     "We clean up the personal credit side, rebuild the books so they tie to your returns, and our in-house CPA and tax team make sure next year's return shows the income a lender needs to see. When the file is ready, iFinancial takes it to SBA lenders who match your profile."),
     ("equipment-financing", "Equipment Financing", "Trucks, machines, medical and restaurant equipment",
      "The equipment itself is the collateral, so approvals can be easier than an unsecured loan. Your rate still depends heavily on your credit and time in business.",
      ["Personal credit score and recent payment history", "Time in business", "Bank statements (often the last 3–6 months)",
@@ -155,7 +175,7 @@ def nav():
 <a class="skip" href="#main">Skip to content</a>
 <div class="topbar"><div class="wrap">
   <span>{STREET}, {CITY} <span class="hide-sm">· {HOURS}</span></span>
-  <span><a {BOOK_A}>Book a call</a> <span class="sep">·</span> <a href="tel:{TEL}">Call {PHONE}</a></span>
+  <span><a href="{ES_MAP.get(CURRENT, '/es/')}" hreflang="es" lang="es">Español</a> <span class="sep">·</span> <a {BOOK_A}>Book a call</a> <span class="sep">·</span> <a href="tel:{TEL}">Call {PHONE}</a></span>
 </div></div>
 <header class="site-head"><div class="wrap">
   <a class="brand" href="/" aria-label="Loan Ready powered by iFinancial — home">
@@ -165,9 +185,10 @@ def nav():
   <button class="menu-btn" aria-expanded="false" aria-controls="nav">Menu</button>
   <nav class="nav" id="nav" aria-label="Main">
     <a href="/credit-repair/">Credit Repair</a>
-    <a href="/bookkeeping-tax-planning/">Bookkeeping &amp; Tax</a>
+    <a href="/bookkeeping-tax-planning/">Tax &amp; Books</a>
     <a href="/get-out-of-mca/">Get Out of MCAs</a>
     <a href="/get-loan-ready/">Loan Types</a>
+    <a href="/loan-calculator/">Calculator</a>
     <a href="/results/">Results</a>
     <a href="/contact/">Visit Us</a>
     <a class="btn btn-gold btn-sm" href="/bankable-check/">Am I Bankable?</a>
@@ -193,6 +214,7 @@ def footer():
       <li><a href="/bankable-check/">60-Second Bankable Check</a></li>
       <li><a href="/get-out-of-mca/">Get Out of MCAs</a></li>
       <li><a href="/lending-has-changed/">How Lending Has Changed</a></li>
+      <li><a href="/loan-calculator/">Loan Calculator</a></li>
       <li><a href="/results/">Client Results</a></li>
     </ul></div>
     <div><h4>Get Ready For</h4><ul>{loans}<li><a href="/get-loan-ready/">All loan types</a></li></ul></div>
@@ -233,18 +255,28 @@ def local_business_schema():
     }
 
 def page(path, title, desc, body, schema=None, priority="0.7", noindex=False):
+    global CURRENT
+    CURRENT = path
     url = DOMAIN + path
+    en_p = path if LANG == "en" else EN_MAP.get(path)
+    es_p = ES_MAP.get(path) if LANG == "en" else path
+    alts = ""
+    if en_p and es_p and not noindex:
+        alts = (f'<link rel="alternate" hreflang="en" href="{DOMAIN}{en_p}">\n'
+                f'<link rel="alternate" hreflang="es" href="{DOMAIN}{es_p}">\n'
+                f'<link rel="alternate" hreflang="x-default" href="{DOMAIN}{en_p}">')
     schemas = [local_business_schema()] + (schema or [])
     ld = "\n".join(f'<script type="application/ld+json">{json.dumps(s, ensure_ascii=False)}</script>' for s in schemas)
     robots = '<meta name="robots" content="noindex">' if noindex else ""
     html = f"""<!doctype html>
-<html lang="en">
+<html lang="{LANG}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{title}</title>
 <meta name="description" content="{desc}">
 <link rel="canonical" href="{url}">
+{alts}
 {robots}
 <meta property="og:type" content="website">
 <meta property="og:title" content="{title}">
@@ -308,7 +340,7 @@ def product_cards():
         out.append(f"""<div class="product{feat}">{tag}
 <h3>{p['name']}</h3><p>{p['blurb']}</p>
 <div class="price">{p['price']}<small>{p['per']}</small></div>{'<div class="price-extra">'+p['extra']+'</div>' if p.get('extra') else ''}
-<div class="price-note">{p['note']}</div>
+<div class="price-note">{p['note']}</div>{'<div class="offer-pill">'+p['offer']+'</div>' if p.get('offer') else ''}
 <ul class="checks">{pts}</ul>
 <a class="btn btn-navy" href="/{p['slug']}/">See how it works</a></div>""")
     return '<div class="grid-3">' + "".join(out) + "</div>"
@@ -375,6 +407,42 @@ def sidebar(current=None):
 </aside>"""
 
 
+
+STATS = [("$50M+", "funded for our clients"), ("200+", "clients served"), ("5 yrs", "getting owners funded"),
+         ("In-house", "accountants, CPA & bookkeepers")]
+
+def stats_block(stats=None, dark=False):
+    st = stats or STATS
+    cls = "stats dark" if dark else "stats"
+    return f'<div class="{cls}">' + "".join(f'<div class="stat"><b>{n}</b><span>{l}</span></div>' for n, l in st) + "</div>"
+
+CASES = [
+    ("Ragtop", "6 loans in 6 months",
+     "Buried in MCAs and high-interest debt, with daily payments eating cash flow.",
+     ["6 loans over 6 months", "Every MCA paid off", "Opened a new division now doing $2M+ a year"]),
+    ("DMLPA", "From MCAs to 3 credit lines",
+     "High-interest credit cards, MCA debt and other business debt holding the credit profile down.",
+     ["Credit profile repaired", "High-interest cards and MCA debt paid off", "3 business lines of credit open", "Working toward an SBA loan"]),
+    ("Burning Hearts Tattoo", "2 MCAs paid off early",
+     "Two merchant cash advances and a credit profile that kept them out of bank money.",
+     ["Credit repair completed", "Both MCAs paid off early", "Saved on the interest payback"]),
+]
+
+def cases_block(cases=None, labels=("Before", "After")):
+    out = []
+    for name, head, before, after in (cases or CASES):
+        a = "".join(f"<li>{x}</li>" for x in after)
+        out.append(f"""<article class="case"><div class="case-top"><span class="case-name">{name}</span><h3>{head}</h3></div>
+<div class="case-before"><span class="lbl">{labels[0]}</span><p>{before}</p></div>
+<div class="case-after"><span class="lbl">{labels[1]}</span><ul>{a}</ul></div></article>""")
+    return '<div class="grid-3 cases">' + "".join(out) + "</div>"
+
+def offer_strip(h="Get funded, get your $1,500 back.",
+                p="Start with Express Repair. If iFinancial funds your deal, we refund your $1,500 Express program fee. Terms are spelled out in your agreement.",
+                cta="Book a Call Now"):
+    return f"""<div class="offer"><div class="offer-badge">$1,500<small>back</small></div><div><h3>{h}</h3><p>{p}</p></div>
+<a class="btn btn-gold" {BOOK_A}>{cta}</a></div>"""
+
 LANDSCAPE = [
     ("Lenders see who else you applied with.",
      "Every hard inquiry shows on your personal and business credit. Cash advances leave UCC filings. Your bank statements show every payment to another lender. In the short-term world, funders share data with each other. Spray applications around and the next lender sees all of it."),
@@ -417,6 +485,8 @@ def check_teaser(dark=False):
 <p>Answer 8 quick questions. You'll see how a bank would read your file, and exactly what's holding you back.</p></div>
 <a class="btn btn-gold" href="/bankable-check/">Take the Bankable Check</a></div>"""
 
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'calc.py')).read())
+
 # ---------------------------------------------------------------- HOME
 home = f"""
 <section class="hero on-dark"><div class="wrap">
@@ -437,7 +507,7 @@ home = f"""
 <div class="sc-foot"><b>Plan:</b> Express Repair round + bookkeeping catch-up. Target: SBA 7(a) in about 6 months.</div>
 </div>
 </div><span class="tri" aria-hidden="true"></span></section>
-
+<div class="wrap stats-wrap">{stats_block()}</div>
 
 <section class="alt"><div class="wrap">
 <div class="section-head"><div class="eyebrow">Lending has changed</div>
@@ -446,6 +516,8 @@ home = f"""
 {landscape_cards()}
 <div class="btn-row" style="margin-top:28px"><a class="btn btn-navy" href="/lending-has-changed/">How to apply strategically →</a><a class="btn btn-gold" href="/bankable-check/">Am I bankable right now?</a></div>
 </div></section>
+
+{mca_compare(CALC_EN)}
 
 <section><div class="wrap">
 <div class="section-head"><div class="eyebrow">Not one loan. A lending relationship.</div>
@@ -458,8 +530,9 @@ home = f"""
 <section class="alt"><div class="wrap">
 <div class="section-head"><div class="eyebrow">Three ways we get you ready</div>
 <h2>Fix the file. Then get funded.</h2>
-<p>Banks rarely say no because of one thing. It's usually the credit report, the books, and the tax returns not telling the same story. We fix all three.</p></div>
+<p>Banks rarely say no because of one thing. It's usually the credit report, the books, and the tax returns not telling the same story. Our accountants, CPA, bookkeepers and credit specialists are all on staff, working in tandem to fix all three and get you funded.</p></div>
 {product_cards()}
+<div style="margin-top:28px">{offer_strip()}</div>
 </div></section>
 
 <section><div class="wrap">
@@ -481,13 +554,19 @@ home = f"""
 </div></section>
 
 <section><div class="wrap">
+<div class="section-head"><div class="eyebrow">Real businesses, real turnarounds</div><h2>From MCAs to bank money.</h2>
+<p>Shared with our clients' permission.</p></div>
+{cases_block()}
+</div></section>
+
+<section class="alt"><div class="wrap">
 <div class="section-head"><div class="eyebrow">Real clients, real reports</div><h2>Recent results.</h2>
 <p>Scores taken from client progress reports, shared with permission. Initials only.</p></div>
 {result_cards()}
 <p class="fineprint" style="margin-top:16px">Individual results. Scores vary by bureau and scoring model. These are not typical or guaranteed outcomes. <a href="/results/">See all results →</a></p>
 </div></section>
 
-<section class="alt"><div class="wrap">
+<section><div class="wrap">
 <div class="section-head"><div class="eyebrow">What clients say</div><h2>Funded, and still working with us.</h2></div>
 {reviews_block()}
 <p class="fineprint" style="margin-top:14px">From client reviews of iFinancial.</p>
@@ -554,12 +633,14 @@ PRODUCT_DETAIL = {
 <li><b>End of round: Report and billing.</b> You get an updated three-bureau report. The $1,500 program fee is billed after the round. The $300 per-item fee applies only to items that were deleted.</li>
 <li><b>Next: Back to the lender.</b> If you're ready, iFinancial takes the updated file to the lender, or to a better one.</li>
 </ul>
+[[OFFER]]
 <h2>An honest note on timing</h2>
 <p>Bureaus generally have 30 days to investigate a dispute. Many respond sooner, but some take the full window. We can't control their timeline or guarantee any specific deletion. We can make sure your round is prepared well and goes out fast.</p>
 <h2>Express or monthly?</h2>
 <p>If you have a closing date or a lender waiting, choose Express. If you're six months or more from applying, the $250/month program is usually the better value. You can start with Express and move to monthly afterward.</p>
 """,
- "faqs": [("What counts as a deleted item?", "An item that is removed from one of your credit reports as a result of our dispute, confirmed on your updated report. If an item is deleted from all three bureaus, we'll explain upfront how that is counted in your agreement."),
+ "faqs": [("Do I really get the $1,500 back?", "Yes. If iFinancial funds your deal, we refund your $1,500 Express program fee. The exact terms, including the timeframe, are in your agreement."),
+          ("What counts as a deleted item?", "An item that is removed from one of your credit reports as a result of our dispute, confirmed on your updated report. If an item is deleted from all three bureaus, we'll explain upfront how that is counted in your agreement."),
           ("What if nothing is deleted?", "Then no per-item fees apply. We'll review the results with you and lay out the next step honestly."),
           ("Can Express help with a mortgage?", "Yes. Mortgage lenders use your middle score, so moving one bureau can matter. We'll target the bureau that will move the middle score.")]},
 "bookkeeping-tax-planning": {
@@ -571,13 +652,13 @@ PRODUCT_DETAIL = {
 <h2>Why underwriters care about your books</h2>
 <p>The fastest way to get turned down is a P&amp;L that doesn't match your tax return, or a tax return that shows almost no profit. Lenders size your loan off documented income. If the books are behind or every possible expense is written off, the bank sees a business that can't afford the payment.</p>
 <h2>Save on taxes without killing your borrowing power</h2>
-<p>Most owners are told to write off everything. That saves money in April, and then the bank sees a business that barely breaks even. Danny plans your taxes with your next loan in mind. You legally keep more from Uncle Sam, and your returns still show the income an underwriter needs.</p>
+<p>Most owners are told to write off everything. That saves money in April, and then the bank sees a business that barely breaks even. Our in-house accountants and CPA plan your taxes with your next loan in mind. You legally keep more from Uncle Sam, and your returns still show the income an underwriter needs.</p>
 <p>The timing matters too. We plan when to file, when to take distributions, and when to apply, so the documents a lender pulls tell the strongest true story about your business.</p>
 <h2>What's included</h2>
 <ul>
 <li><b>Monthly bookkeeping.</b> Categorized transactions, bank and credit card reconciliations, and a monthly close.</li>
 <li><b>Lender-ready statements.</b> A P&amp;L and balance sheet every month, in the format underwriters expect.</li>
-<li><b>Year-round tax planning.</b> Danny works with you during the year, not just at filing time. Together you balance lower taxes against showing the income your next loan needs.</li>
+<li><b>Year-round tax planning.</b> Our CPA and accountants work with you during the year, not just at filing time. Together you balance lower taxes against showing the income your next loan needs.</li>
 <li><b>Debt service tracking.</b> We track how much new debt your cash flow can support. You'll know what you can borrow before you apply.</li>
 <li><b>Loan file package.</b> Statements, returns, aging reports, and a personal financial statement, organized for the lender.</li>
 </ul>
@@ -596,7 +677,7 @@ for p in PRODUCTS:
     path = f"/{p['slug']}/"
     body = page_hero([("Home", "/"), (p["name"], path)], d["h1"], d["lede"], eyebrow=p["name"]) + f"""
 <section><div class="wrap layout">
-<article class="content">{d['body']}
+<article class="content">{d['body'].replace('[[OFFER]]', offer_strip())}
 <div class="aside-cta"><h3>{p['price']}<span style="font-weight:600;color:var(--muted);font-size:.9rem">{p['per'] or ' ' + p.get('extra','')}</span></h3><p style="margin:0 0 14px">{p['note']}</p>
 <a class="btn btn-gold" href="/free-loan-score/">Start with a Free Loan Score</a></div>
 <h2>Common questions</h2>{faq_block(d['faqs'])}
@@ -671,7 +752,11 @@ for slug, name, intro, directions in AREAS:
 # ---------------------------------------------------------------- RESULTS
 body = page_hero([("Home", "/"), ("Results", "/results/")], "Client results, straight from the reports.",
                  "These numbers come from our clients' credit progress reports. They're shared with permission, using initials only.", eyebrow="Results") + f"""
-<section><div class="wrap">{result_cards()}
+<section><div class="wrap">
+<div class="section-head"><div class="eyebrow">Business turnarounds</div><h2>From MCAs to bank money.</h2></div>
+{cases_block()}
+<div class="section-head" style="margin-top:56px"><div class="eyebrow">Credit results</div><h2>Before and after, from the reports.</h2></div>
+{result_cards()}
 <div class="aside-cta" style="max-width:820px"><h3>Read these honestly</h3>
 <p style="margin:0">Every file is different. These are individual results, not typical or guaranteed outcomes. Scores vary by bureau, scoring model and timing. Some items get deleted, and some are verified and stay. Some scores move fast and some take months. We'll tell you what's realistic for your file after we review it.</p></div>
 </div></section>
@@ -799,7 +884,7 @@ body = page_hero([("Home", "/"), ("Get Out of MCAs", "/get-out-of-mca/")],
 <ol>
 <li><b>Stop the bleeding.</b> No new positions. We review every advance, its payment and its balance, and map the order to retire them.</li>
 <li><b>Fix the footprint.</b> Credit profile repair, bookkeeping caught up, and bank statements cleaned up over the months a bank will review.</li>
-<li><b>Tax plan for the loan.</b> Your next return needs to show the income that supports a bank payment. Danny plans for that, without overpaying Uncle Sam.</li>
+<li><b>Tax plan for the loan.</b> Your next return needs to show the income that supports a bank payment. Our in-house CPA plans for that, without overpaying Uncle Sam.</li>
 <li><b>Step down your cost of capital.</b> Move from advances to a line of credit or term loan, then to bank and SBA financing. Every round should cost less than the last.</li>
 <li><b>Stay funded.</b> We don't fund you once and disappear. We're with you for the next round, and the one after that.</li>
 </ol>
@@ -808,81 +893,31 @@ body = page_hero([("Home", "/"), ("Get Out of MCAs", "/get-out-of-mca/")],
 <div class="aside-cta"><h3>How deep are you in?</h3><p style="margin:0 0 14px">Take the 60-second Bankable Check, or book a call and bring your MCA statements. We'll map your way out.</p>
 <div class="btn-row"><a class="btn btn-gold" {BOOK_A}>Book a Call Now</a><a class="btn btn-navy" href="/bankable-check/">Take the Bankable Check</a></div></div>
 
+<h2>Businesses we've moved out of MCAs</h2>
+{cases_block()}
 <h2>Common questions</h2>{faq_block(mca_faqs)}
 <p class="fineprint">Refinancing depends on lender approval, your cash flow and your full financial profile. Not every advance can be refinanced into bank or SBA debt.</p>
 </article>{sidebar()}</div></section>
+{mca_compare(CALC_EN)}
 {band("Every month in an MCA costs you. Let's plan your way out.", "Book a call today. Bring your statements, and leave with a plan.")}"""
 page("/get-out-of-mca/", "Get Out of Merchant Cash Advances, Into Bank & SBA Loans | Loan Ready by iFinancial",
      "Stuck in stacked MCAs? Loan Ready by iFinancial fixes your credit profile, books, bank statements and tax plan so you can move to bank and SBA financing. North Palm Beach, FL.",
      body, [faq_schema(mca_faqs), breadcrumb_schema([("Home", "/"), ("Get Out of MCAs", "/get-out-of-mca/")])], priority="0.9")
 
 # ---------------------------------------------------------------- BANKABLE CHECK (interactive)
-QUIZ = [
-    ("What's your credit score, roughly?", [("720 or higher", 3, ""), ("680–719", 2, ""), ("620–679", 1, "Your score is in a range where many banks decline or price you high."), ("Under 620 / not sure", 0, "Your score is below what most banks, and now many MCA funders, accept.")]),
-    ("Hard inquiries in the last 12 months?", [("0–3", 2, ""), ("4–8", 1, "Lenders can see you've been shopping around."), ("9 or more", 0, "A long trail of applications tells lenders others have said no.")]),
-    ("Open MCAs or daily/weekly payments to funders?", [("None", 3, ""), ("One", 1, "An open advance shows on your statements and often as a UCC filing."), ("Two or more", 0, "Stacked advances are one of the biggest red flags for banks.")]),
-    ("How long have you been in business?", [("2+ years", 2, ""), ("1–2 years", 1, "Many bank and SBA lenders prefer 2+ years of history."), ("Under 1 year", 0, "Under a year limits you to a narrow set of lenders.")]),
-    ("Are your books current, and do they match your tax returns?", [("Yes", 2, ""), ("Behind or not sure", 1, "Books that don't tie to your returns stall underwriting."), ("No bookkeeping", 0, "Without financial statements, bank and SBA loans are off the table.")]),
-    ("What did your last business tax return show?", [("A healthy profit", 2, ""), ("A small profit", 1, "Thin profit on paper limits how much a bank will lend."), ("A loss", 0, "A loss on your return usually means a decline, even with strong revenue.")]),
-    ("Late payments or collections in the last 2 years?", [("None", 2, ""), ("1–2", 1, "Recent late payments or collections drag your profile down."), ("3 or more", 0, "Multiple recent derogatory items will stop most bank approvals.")]),
-    ("NSFs or negative-balance days in the last 3 months?", [("None", 2, ""), ("A few", 1, "Underwriters count NSFs and negative days on your statements."), ("Frequent", 0, "Frequent NSFs tell a lender cash flow can't support a payment.")]),
-]
-qhtml = ""
-for i, (q, opts) in enumerate(QUIZ):
-    o = "".join(f'<label class="opt"><input type="radio" name="q{i}" value="{pts}" data-flag="{flag}" required><span>{t}</span></label>' for t, pts, flag in opts)
-    qhtml += f'<fieldset class="q"><legend><span class="qn">{i+1}/8</span>{q}</legend><div class="opts">{o}</div></fieldset>'
-
-body = f"""<section class="hero page-hero on-dark"><div class="wrap"><div>
-<div class="crumbs"><a href="/">Home</a> / Bankable Check</div><div class="eyebrow">Free · 60 seconds · No credit pull</div>
-<h1>Are you bankable right now?</h1>
-<p class="lede">Answer 8 questions the way a bank underwriter would look at your file. You'll get your score, your red flags, and what to fix first.</p>
-</div></div><span class="tri" aria-hidden="true"></span></section>
-<section><div class="wrap" style="max-width:860px">
-<form id="quiz" class="quiz" novalidate>{qhtml}
-<p class="quiz-err" id="quiz-err" hidden>Answer all 8 questions to see your result.</p>
-<button type="submit" class="btn btn-gold">See My Result</button></form>
-<div id="result" class="result-box" hidden>
-<div class="r-top"><div class="r-score"><b id="r-num">0</b><span>/ 18</span></div><div><div class="eyebrow" id="r-tier">Result</div><h2 id="r-head"></h2><p id="r-text"></p></div></div>
-<div id="r-flags-wrap"><h3>What a lender would flag</h3><ul id="r-flags" class="flags"></ul></div>
-<div class="btn-row" style="margin-top:22px"><a class="btn btn-gold" {BOOK_A}>Book My Call Now</a><a class="btn btn-navy" id="r-form" href="/free-loan-score/">Get My Full Loan Score</a><a class="btn btn-call dark" href="tel:{TEL}">or call {PHONE}</a></div>
-<p class="fineprint" style="margin-top:16px">This is an educational self-check, not a credit decision or a guarantee of approval. Every lender has its own guidelines.</p>
-</div>
-</div></section>
-<script>
-(function(){{
-var f=document.getElementById('quiz'),box=document.getElementById('result'),err=document.getElementById('quiz-err');
-var T={{
- high:["Bankable: be strategic","You may be ready for bank or SBA financing.","Don't waste it. One wrong application can cost you the approval. Let us match you to the right lender and submit at the right time."],
- mid:["Close: fixable","A few things stand between you and a bank yes.","This is exactly what we fix. Most files like yours need a focused plan of a few months, not years."],
- low:["Not yet: let's build the path","Right now, banks would likely say no.","That's not the end. It's the starting point. We'll fix your footprint and step you from expensive money to bank and SBA financing."]
-}};
-f.addEventListener('submit',function(e){{
- e.preventDefault();var total=0,flags=[],ok=true;
- for(var i=0;i<8;i++){{var c=f.querySelector('input[name=q'+i+']:checked');if(!c){{ok=false;break;}}total+=+c.value;if(c.dataset.flag)flags.push(c.dataset.flag);}}
- if(!ok){{err.hidden=false;return;}} err.hidden=true;
- var k=total>=15?'high':(total>=9?'mid':'low'),t=T[k];
- document.getElementById('r-num').textContent=total;document.getElementById('r-tier').textContent=t[0];
- document.getElementById('r-head').textContent=t[1];document.getElementById('r-text').textContent=t[2];
- var ul=document.getElementById('r-flags');ul.innerHTML='';flags.forEach(function(x){{var li=document.createElement('li');li.textContent=x;ul.appendChild(li);}});
- document.getElementById('r-flags-wrap').hidden=!flags.length;
- document.getElementById('r-form').href='/free-loan-score/?check='+total+'&tier='+encodeURIComponent(t[0]);
- box.hidden=false;box.scrollIntoView({{behavior:'smooth',block:'start'}});
-}});
-}})();
-</script>
-{band("Don't get stuck in this economy. Be ready for tomorrow.", "Talk to us before you talk to a bank.")}"""
-page("/bankable-check/", "Am I Bankable? Free 60-Second Business Loan Readiness Check | Loan Ready",
-     "Answer 8 questions and see how a bank would read your file: credit, inquiries, MCAs, books, taxes and bank statements. Free, no credit pull. Loan Ready by iFinancial.",
-     body, priority="0.9")
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'bankable.py')).read())
+bankable_page(BK_EN)
+calc_page(CALC_EN)
 
 # ---------------------------------------------------------------- CONTACT / ABOUT
 body = page_hero([("Home", "/"), ("Visit Us", "/contact/")], "Visit Loan Ready in North Palm Beach.",
                  f"{ADDR_ONE}. Open {HOURS}.", eyebrow="Contact") + visit_block() + f"""
 <section class="alt"><div class="wrap grid-2">
 <div><div class="eyebrow">Who we are</div><h2>Part of iFinancial. Built to close the gap.</h2>
+{stats_block()}
 <p>iFinancial bridges the gap between small business owners and the bankers who lend to them. We arrange everything from same-day funding to SBA, asset-based and long-term loans.</p>
 <p>Loan Ready is the other half of that work. It's for the owners and families who aren't approvable yet. Our in-house credit team, bookkeeping and tax planning get the file ready, and then iFinancial gets it funded.</p></div>
-<div><h3>Our team</h3><ul class="checks"><li>Credit repair specialists for monthly and Express files</li><li>Bookkeeping and tax planning led by Danny</li><li>Funding advisors at iFinancial for placement</li></ul>
+<div><h3>Our team</h3><ul class="checks"><li>Credit repair specialists for monthly and Express files</li><li>Accountants, a CPA and bookkeepers on staff, working in tandem with the credit team</li><li>Funding advisors at iFinancial for placement</li></ul>
 <a class="btn btn-gold" href="/free-loan-score/">Book a Free Loan Score</a></div>
 </div></section>"""
 page("/contact/", "Contact & Directions — 751 Northlake Blvd, North Palm Beach | Loan Ready",
@@ -924,6 +959,9 @@ page("/privacy-policy/", "Privacy Policy | Loan Ready by iFinancial", "Privacy p
 
 page("/404.html", "Page Not Found | Loan Ready", "Page not found.",
      page_hero([("Home", "/"), ("Not found", "/404.html")], "That page isn't here.", "Try the menu above, or start with a free Loan Score."), noindex=True)
+
+# ---------------------------------------------------------------- SPANISH
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'content_es.py')).read())
 
 # ---------------------------------------------------------------- sitemap, robots, netlify
 with open(os.path.join(ROOT, "sitemap.xml"), "w") as f:
