@@ -507,3 +507,24 @@ section{padding:84px 0}
   .menu-btn{display:block}
   .site-head .wrap{position:relative}
 }
+
+/* Bankable Check — one page, roomy */
+.quiz-section{padding:72px 0 96px;background:linear-gradient(180deg,var(--paper),#fff 50%)}
+.quiz-wrap{max-width:880px}
+.quiz .q{border:1px solid var(--line);border-radius:16px;padding:30px 32px 32px;margin:0 0 26px;background:#fff;box-shadow:0 12px 30px -24px rgba(20,32,74,.45);transition:border-color .2s}
+.quiz .q.answered{border-color:#b9c9e6}
+.quiz legend{display:flex;gap:16px;align-items:flex-start;float:left;width:100%;margin-bottom:22px;font-size:1.25rem}
+.quiz .qn{flex:none;width:38px;height:38px;border-radius:10px;background:var(--navy);color:#fff;font-size:1rem;display:flex;align-items:center;justify-content:center;margin:0;padding:0;vertical-align:0}
+.quiz .q.answered .qn{background:var(--blue)}
+.quiz .qt small{display:block;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
+.quiz .opts{gap:14px}
+.quiz .opt span{padding:16px 12px;border-radius:10px;font-size:1rem}
+.quiz .btn-lg{margin-top:12px;padding:20px}
+.result-box{padding:40px 44px;margin-top:40px;border-radius:18px;box-shadow:0 30px 60px -30px rgba(20,32,74,.4)}
+.result-box .r-top{gap:32px;padding-bottom:28px;border-bottom:1px solid var(--line);margin-bottom:26px}
+.result-box .r-score{width:132px;height:132px}
+.tier-high .r-score b{color:#7be0a9}.tier-low .r-score b{color:#ff8a80}
+.r-sub{font-size:1.1rem;margin-bottom:10px}
+.result-box .flags li{padding:12px 0 12px 32px}
+.result-box .flags li::before{top:13px}
+@media (max-width:640px){.quiz .q{padding:22px 18px}.quiz legend{font-size:1.08rem}.result-box{padding:26px 20px}}

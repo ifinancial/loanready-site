@@ -46,81 +46,48 @@ BK_EN = {
 
 BK_JS = r"""
 (function(){
-var T=__T__,N=T.n,ans=new Array(N),flags=new Array(N),i=0;
-var steps=document.querySelectorAll('.bk-step'),fill=document.getElementById('bk-fill'),cnt=document.getElementById('bk-i'),
-back=document.getElementById('bk-back'),side=document.querySelectorAll('.bk-side li'),quiz=document.getElementById('bk-quiz'),res=document.getElementById('bk-result');
-function show(k){i=k;steps.forEach(function(s,j){s.hidden=j!==k;});cnt.textContent=k+1;fill.style.width=((k)/N*100)+'%';back.hidden=k===0;
- side.forEach(function(li,j){li.classList.toggle('active',j===k);li.classList.toggle('done',ans[j]!==undefined&&j!==k);});
- var f=steps[k].querySelector('.bk-opt.sel')||steps[k].querySelector('.bk-opt');if(f&&k>0)f.focus({preventScroll:true});}
-document.querySelectorAll('.bk-opt').forEach(function(b){b.addEventListener('click',function(){
- var s=+b.dataset.s;ans[s]=+b.dataset.v;flags[s]=b.dataset.flag;
- steps[s].querySelectorAll('.bk-opt').forEach(function(o){o.classList.toggle('sel',o===b);o.setAttribute('aria-pressed',o===b);});
- setTimeout(function(){if(s<N-1)show(s+1);else finish();},260);});});
-back.addEventListener('click',function(){if(i>0)show(i-1);});
-function finish(){
- var tot=ans.reduce(function(a,b){return a+b;},0),k=tot>=15?'high':(tot>=9?'mid':'low'),t=T.tiers[k];
- quiz.hidden=true;res.hidden=false;res.className='bk-result tier-'+k;
- document.getElementById('r-num').textContent=tot;document.getElementById('r-tier').textContent=t[0];
+var T=__T__,f=document.getElementById('quiz'),box=document.getElementById('result'),err=document.getElementById('quiz-err');
+f.addEventListener('submit',function(e){
+ e.preventDefault();var total=0,flags=[],ok=true;
+ for(var i=0;i<T.n;i++){var c=f.querySelector('input[name=q'+i+']:checked');if(!c){ok=false;break;}total+=+c.value;if(c.dataset.flag)flags.push(c.dataset.flag);}
+ if(!ok){err.hidden=false;return;} err.hidden=true;
+ var k=total>=15?'high':(total>=9?'mid':'low'),t=T.tiers[k];
+ box.className='result-box tier-'+k;
+ document.getElementById('r-num').textContent=total;document.getElementById('r-tier').textContent=t[0];
  document.getElementById('r-head').textContent=t[1];document.getElementById('r-text').textContent=t[2];
- var arc=document.getElementById('g-arc'),L=282.7;arc.style.strokeDasharray='0 '+L;
- setTimeout(function(){arc.style.strokeDasharray=(tot/18*L)+' '+L;},60);
- var ul=document.getElementById('r-flags');ul.innerHTML='';var fl=flags.filter(function(x){return x;});
- fl.forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
- document.getElementById('r-clean').hidden=fl.length>0;ul.hidden=!fl.length;
- document.getElementById('r-form').href=T.form+'?check='+tot+'&tier='+encodeURIComponent(t[0]);
- side.forEach(function(li){li.classList.remove('active');li.classList.add('done');});
- res.scrollIntoView({behavior:'smooth',block:'start'});}
-document.getElementById('bk-retake').addEventListener('click',function(){ans=new Array(N);flags=new Array(N);
- document.querySelectorAll('.bk-opt').forEach(function(o){o.classList.remove('sel');});res.hidden=true;quiz.hidden=false;show(0);
- quiz.scrollIntoView({behavior:'smooth',block:'start'});});
-show(0);
+ var ul=document.getElementById('r-flags');ul.innerHTML='';flags.forEach(function(x){var li=document.createElement('li');li.textContent=x;ul.appendChild(li);});
+ ul.hidden=!flags.length;document.getElementById('r-clean').hidden=!!flags.length;
+ document.getElementById('r-form').href=T.form+'?check='+total+'&tier='+encodeURIComponent(t[0]);
+ box.hidden=false;box.scrollIntoView({behavior:'smooth',block:'start'});
+});
+f.querySelectorAll('input[type=radio]').forEach(function(r){r.addEventListener('change',function(){r.closest('.q').classList.add('answered');});});
 })();
 """
 
 def bankable_page(T):
     n = len(T["q"])
-    steps = ""
-    for si, (q, opts) in enumerate(T["q"]):
-        o = "".join(
-            f'<button type="button" class="bk-opt" aria-pressed="false" data-s="{si}" data-v="{pts}" data-flag="{flag}"><span class="k">{"ABCD"[oi]}</span><span class="t">{txt}</span></button>'
-            for oi, (txt, pts, flag) in enumerate(opts))
-        steps += f'<div class="bk-step"{" hidden" if si else ""}><div class="bk-cat">{T["cats"][si]}</div><h2>{q}</h2><div class="bk-opts">{o}</div></div>'
-    side = "".join(f'<li><span class="dot"></span>{c}</li>' for c in T["cats"])
+    qhtml = ""
+    for i, (q, opts) in enumerate(T["q"]):
+        o = "".join(f'<label class="opt"><input type="radio" name="q{i}" value="{pts}" data-flag="{flag}"><span>{t}</span></label>' for t, pts, flag in opts)
+        qhtml += f'<fieldset class="q"><legend><span class="qn">{i+1}</span><span class="qt"><small>{T["cats"][i]}</small>{q}</span></legend><div class="opts">{o}</div></fieldset>'
     chips = "".join(f"<span>{c}</span>" for c in T["chips"])
-    nxt = "".join(f"<li><span>{k+1}</span>{x}</li>" for k, x in enumerate(T["next"]))
     js = BK_JS.replace("__T__", json.dumps({"n": n, "tiers": T["tiers"], "form": T["form_path"]}, ensure_ascii=False))
-    count = T["count"].replace("{i}", '<b id="bk-i">1</b>').replace("{n}", str(n))
+    home = "/" if LANG == "en" else "/es/"
     body = f"""<section class="hero page-hero bk-hero on-dark"><div class="wrap"><div>
-<div class="crumbs"><a href="{'/' if LANG == 'en' else '/es/'}">{T['home']}</a> / {T['crumb']}</div><div class="eyebrow">{T['eyebrow']}</div>
+<div class="crumbs"><a href="{home}">{T['home']}</a> / {T['crumb']}</div><div class="eyebrow">{T['eyebrow']}</div>
 <h1>{T['h1']}</h1><p class="lede">{T['lede']}</p><div class="chips">{chips}</div>
 </div></div><span class="tri" aria-hidden="true"></span></section>
-<section class="bk-section"><div class="wrap bk-grid">
-<div class="bk-main">
-<div class="bk-card" id="bk-quiz">
-<div class="bk-progress"><div class="bk-count">{count}</div><div class="bk-bar"><span id="bk-fill"></span></div></div>
-{steps}
-<button type="button" class="bk-back" id="bk-back" hidden>{T['back']}</button>
-</div>
-<div class="bk-card bk-result" id="bk-result" hidden>
-<div class="r-head">
-<div class="gauge"><svg viewBox="0 0 220 130" aria-hidden="true"><path d="M20 120 A90 90 0 0 1 200 120" class="g-bg"/><path id="g-arc" d="M20 120 A90 90 0 0 1 200 120" class="g-fg"/></svg>
-<div class="g-num"><b id="r-num">0</b><span>{T['of']}</span></div></div>
-<div><span class="tier-pill" id="r-tier"></span><h2 id="r-head"></h2><p id="r-text"></p></div>
-</div>
-<div class="r-cols">
-<div><h3>{T['flags_title']}</h3><ul id="r-flags" class="flags"></ul><p id="r-clean" class="clean" hidden>{T['clean']}</p></div>
-<div><h3>{T['next_title']}</h3><ol class="next">{nxt}</ol></div>
-</div>
+<section class="quiz-section"><div class="wrap quiz-wrap">
+<form id="quiz" class="quiz" novalidate>{qhtml}
+<p class="quiz-err" id="quiz-err" hidden>{T.get('err', 'Answer all 8 questions to see your result.')}</p>
+<button type="submit" class="btn btn-gold btn-lg">{T.get('submit', 'See My Result')}</button></form>
+<div id="result" class="result-box" hidden>
+<div class="r-top"><div class="r-score"><b id="r-num">0</b><span>/ 18</span></div><div><div class="eyebrow" id="r-tier"></div><h2 id="r-head"></h2><p id="r-text"></p></div></div>
+<h3 class="r-sub">{T['flags_title']}</h3><ul id="r-flags" class="flags"></ul><p id="r-clean" class="clean" hidden>{T['clean']}</p>
 <div class="btn-row r-cta"><a class="btn btn-gold btn-lg" {BOOK_A}>{T['book']}</a><a class="btn btn-navy" id="r-form" href="{T['form_path']}">{T['form']}</a><a class="btn btn-call dark" href="tel:{TEL}">{T['call'].replace('{phone}', PHONE)}</a></div>
 <div class="r-offer"><b>$1,500</b><span>{T['offer']}</span></div>
-<p class="fineprint">{T['disclaimer']} <button type="button" class="linkish" id="bk-retake">{T['retake']}</button></p>
+<p class="fineprint">{T['disclaimer']}</p>
 </div>
-</div>
-<aside class="bk-side">
-<div class="bk-side-card"><h3>{T['side_title']}</h3><ul>{side}</ul></div>
-<div class="bk-side-card trust">{stats_block(T.get('stats'))}
-<blockquote>“{T['trust_quote']}”</blockquote><cite>{T['trust_name']}</cite></div>
-</aside>
 </div></section>
 <script>{js}</script>
 {band(T['band_h'], T['band_p'])}"""

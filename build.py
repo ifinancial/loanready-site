@@ -17,6 +17,8 @@ MAPQ = "751+Northlake+Blvd+Suite+2D,+North+Palm+Beach,+FL+33408"
 TODAY = datetime.date.today().isoformat()
 
 PAGES = []  # (path, priority)
+import hashlib
+CSS_V = hashlib.md5(open(os.path.join(ROOT, "assets", "site.css"), "rb").read()).hexdigest()[:8]
 LANG = "en"
 CURRENT = "/"
 # English path -> Spanish path (drives hreflang + the language switch)
@@ -288,7 +290,7 @@ def page(path, title, desc, body, schema=None, priority="0.7", noindex=False):
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="/assets/site.css?v={CSS_V}">
 {ld}
 </head>
 <body>
@@ -461,10 +463,10 @@ def landscape_cards():
 
 def ladder_block():
     rungs = [
-        ("Today", "Short-term money", "MCA or bridge funding if you need it now. Structured so it doesn't trap you."),
-        ("Months 1–6", "Fix the footprint", "Credit profile, books, bank statements, and tax plan. No more stacking."),
-        ("Months 6–12", "Lines & term loans", "Lower-cost lines of credit and term loans that pay off the expensive money."),
-        ("Year 1+", "Bank & SBA", "Long-term bank and SBA financing. Then the next round, and the one after that."),
+        ("Today", "Bridge or restructure", "A bridge loan, or restructuring your current debt without a default, if you need relief now."),
+        ("Months 1–3", "Fix the footprint", "Credit profile, books, bank statements, and tax plan. No more stacking."),
+        ("Months 3–6", "Lines & term loans", "Lower-cost lines of credit and term loans that pay off the expensive money."),
+        ("Months 6–12", "Bank & SBA", "Long-term bank and SBA financing. Then the next round, and the one after that."),
     ]
     return '<div class="ladder">' + "".join(
         f'<div class="rung"><span class="when">{w}</span><h3>{h}</h3><p>{p}</p></div>' for w, h, p in rungs) + "</div>"
@@ -972,5 +974,5 @@ with open(os.path.join(ROOT, "sitemap.xml"), "w") as f:
 with open(os.path.join(ROOT, "robots.txt"), "w") as f:
     f.write(f"User-agent: *\nAllow: /\n\nSitemap: {DOMAIN}/sitemap.xml\n")
 with open(os.path.join(ROOT, "_headers"), "w") as f:
-    f.write("/assets/*\n  Cache-Control: public, max-age=31536000\n/*\n  X-Frame-Options: SAMEORIGIN\n  Referrer-Policy: strict-origin-when-cross-origin\n")
+    f.write("/assets/*.png\n  Cache-Control: public, max-age=31536000\n/assets/*.css\n  Cache-Control: public, max-age=300\n/*\n  X-Frame-Options: SAMEORIGIN\n  Referrer-Policy: strict-origin-when-cross-origin\n")
 print(f"Built {len(PAGES)} indexable pages")
