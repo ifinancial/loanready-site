@@ -99,7 +99,7 @@ def footer():
     <div><h4>Zonas que servimos</h4><ul><li>North Palm Beach</li><li>Palm Beach Gardens</li><li>Jupiter</li><li>West Palm Beach</li><li>Riviera Beach y Lake Park</li></ul></div>
   </div>
   <div class="legal">
-    <p>Loan Ready es un programa de iFinancial. No garantizamos ningún aumento específico de puntaje, eliminación de cuentas ni aprobación de préstamos. La información correcta y vigente no se puede eliminar de un reporte de crédito. Usted tiene derecho a disputar información incorrecta directamente con los burós de crédito sin costo. El financiamiento está sujeto a la aprobación del prestamista. Los resultados individuales varían.</p>
+    <p>Loan Ready es un programa de iFinancial (antes Finance Solutions Group). No garantizamos ningún aumento específico de puntaje, eliminación de cuentas ni aprobación de préstamos. La información correcta y vigente no se puede eliminar de un reporte de crédito. Usted tiene derecho a disputar información incorrecta directamente con los burós de crédito sin costo. El financiamiento está sujeto a la aprobación del prestamista. Los resultados individuales varían.</p>
     <p><a href="/es/sus-derechos/">Sus derechos y divulgaciones</a> · <a href="/">English</a> · <a href="https://goifinancial.com">goifinancial.com</a> · © {datetime.date.today().year} iFinancial</p>
   </div>
 </div></footer>
@@ -362,7 +362,7 @@ body = page_hero([("Inicio", "/es/"), ("Salir de los MCA", "/es/salir-de-mca/")]
 <li><b>Seguir financiado.</b> No le financiamos una vez y desaparecemos. Estamos con usted en la siguiente ronda.</li></ol>
 {ladder_es()}
 <h2>Negocios que sacamos de los MCA</h2>{cases_block(CASES_ES, ("Antes", "Después"))}
-<p class="fineprint">El refinanciamiento depende de la aprobación del prestamista, su flujo de caja y su perfil financiero completo. No todo adelanto se puede refinanciar con deuda bancaria o SBA.</p>
+<p class="fineprint">El refinanciamiento depende de la aprobación del prestamista, su flujo de caja y su perfil financiero completo. Bajo las reglas actuales de la SBA, los fondos de un préstamo SBA no se pueden usar para pagar adelantos de efectivo (MCA). Por eso los pagamos primero con financiamiento convencional y luego pasamos a SBA.</p>
 </article>{sidebar()}</div></section>
 {mca_compare(CALC_ES)}
 {band("Cada mes en un MCA le cuesta. Planifiquemos su salida.", "Agende una llamada hoy. Traiga sus estados de cuenta y salga con un plan.")}"""
@@ -387,6 +387,8 @@ body = page_hero([("Inicio", "/es/"), ("Cómo cambiaron los préstamos", "/es/co
 <div class="aside-cta"><h3>Sepa si está listo antes que el prestamista.</h3><p style="margin:0 0 14px">Nuestra prueba de 60 segundos le muestra cómo un banco leería su archivo.</p><div class="btn-row"><a class="btn btn-gold" href="/es/soy-bancable/">¿Soy bancable?</a><a class="btn btn-navy" {BOOK_A}>Agendar una llamada</a></div></div>
 <h2>Los MCA evalúan como antes evaluaban los bancos</h2>
 <p>En nuestra experiencia, muchos fondeadores ya piden crédito de 620 en adelante, más documentos, estados de cuenta más limpios y límites más estrictos al apilamiento. Esperar a estar desesperado es el plan más caro que existe.</p>
+<h2>El dinero de la SBA ya no puede pagar un MCA</h2>
+<p>Bajo las reglas de la SBA vigentes desde 2025, los fondos de un préstamo SBA no se pueden usar para refinanciar adelantos de efectivo. Además, la SBA subió el puntaje mínimo para sus préstamos 7(a) pequeños (ahora hasta $350,000), volvió a cobrar sus cargos de garantía y exige que el negocio sea 100% de ciudadanos, nacionales o residentes permanentes de EE. UU. Primero financiamiento convencional, después SBA.</p>
 <h2>Qué significa "bancable"</h2>
 <ul class="checks"><li>Perfil de crédito limpio y fuerte</li><li>Pocas consultas recientes</li><li>Estados de cuenta sin sobregiros ni pagos diarios apilados</li><li>Libros al día que cuadran con sus impuestos</li><li>Declaraciones que muestran ingreso suficiente para el nuevo pago</li><li>Un plan de qué prestamista va primero y cuál después</li></ul>
 <p><b>Arreglamos su huella financiera y su perfil de crédito para que sea bancable.</b> Luego iFinancial lo presenta, con estrategia.</p>
@@ -490,7 +492,8 @@ page("/es/gracias/", "Gracias | Loan Ready by iFinancial", "Recibimos su solicit
 body = page_hero([("Inicio", "/es/"), ("Visítenos", "/es/contacto/")], "Visite Loan Ready en North Palm Beach.",
                  f"{ADDR_ONE}. {HOURS_ES}. Atendemos en español.", eyebrow="Contacto") + visit_block() + f"""
 <section class="alt"><div class="wrap grid-2">
-<div><div class="eyebrow">Quiénes somos</div><h2>Parte de iFinancial. Hechos para cerrar la brecha.</h2>{stats_block(STATS_ES)}
+<div><div class="eyebrow">Quiénes somos</div><h2>Parte de iFinancial. Hechos para cerrar la brecha.</h2>
+<p><b>iFinancial, antes Finance Solutions Group.</b> El mismo equipo y la misma oficina, con nuevo nombre.</p>{stats_block(STATS_ES)}
 <p>iFinancial conecta a los dueños de pequeños negocios con los banqueros que les prestan: desde financiamiento el mismo día hasta SBA, préstamos basados en activos y a largo plazo. Loan Ready es la otra mitad: preparamos el archivo y luego iFinancial lo financia.</p></div>
 <div><h3>Nuestro equipo</h3><ul class="checks"><li>Especialistas en reparación de crédito, mensual y Express</li><li>Contadores, CPA y tenedores de libros en casa, trabajando junto al equipo de crédito</li><li>Asesores de financiamiento de iFinancial</li></ul>
 <a class="btn btn-gold" {BOOK_A}>Agendar una llamada</a></div></div></section>"""

@@ -139,6 +139,18 @@ AREAS = [
     ("riviera-beach-lake-park", "Riviera Beach & Lake Park",
      "Riviera Beach and Lake Park are our closest neighbors. Many clients here are trades, logistics, and marine businesses near the port, plus families getting ready to buy a home. If you're nearby, stop by and we'll go over your report in person.",
      "Head north on US-1 or Congress Ave to Northlake Blvd. We're at 751 Northlake Blvd, Suite 2D, North Palm Beach."),
+    ("juno-beach-tequesta", "Juno Beach & Tequesta",
+     "Juno Beach and Tequesta are a short drive up the road. We work with a lot of owners here who run restaurants, salons, marine and home-service companies, and with families getting ready to buy or refinance. Many have strong income on paper problems: the business makes money, but the tax returns and credit report don't show it. That's exactly the gap we close.",
+     "Take US-1 or I-95 south to Northlake Blvd and follow it to 751 Northlake Blvd, Suite 2D, North Palm Beach."),
+    ("stuart", "Stuart & Martin County",
+     "Our phone number starts with 772 for a reason: we serve Stuart, Palm City, Jensen Beach and the rest of Martin County. Owners here are often a step away from bank financing, with a solid business held back by a credit report, a stack of advances, or books that are a year behind. Meet us by video, or make the drive south when it's time to sign.",
+     "Take I-95 south to the Northlake Blvd exit and follow Northlake to 751 Northlake Blvd, Suite 2D, North Palm Beach. Phone and video appointments are available too."),
+    ("port-st-lucie", "Port St. Lucie",
+     "Port St. Lucie is one of the fastest-growing cities in Florida, and growth takes capital. We help PSL contractors, trucking and logistics companies, medical practices and new franchise owners get bankable: credit repaired, books current, taxes planned for the loan, and the right lender lined up. Most of our Treasure Coast clients work with us by phone and video.",
+     "Take I-95 south to the Northlake Blvd exit and follow Northlake to 751 Northlake Blvd, Suite 2D, North Palm Beach. Most Port St. Lucie clients meet with us by video."),
+    ("wellington-royal-palm-beach", "Wellington & Royal Palm Beach",
+     "Wellington and Royal Palm Beach owners, from equestrian and agricultural businesses to medical, retail and home services, come to us when a bank asks for documents they don't have ready, or when short-term funding has started to squeeze cash flow. We'll get your file bank-ready and line up the right lender.",
+     "Take Southern Blvd or Okeechobee Blvd east to I-95, then north to the Northlake Blvd exit. We're at 751 Northlake Blvd, Suite 2D, North Palm Beach."),
 ]
 
 RESULTS = [
@@ -171,6 +183,9 @@ FAQS = [
      "Both. Most small-business loans depend on the owner's personal credit, so we usually start there. We also help individuals get ready for a mortgage, auto loan or personal financing."),
 ]
 
+for _f in ('blog_posts_1.py', 'blog_posts_2.py', 'blog_posts_3.py'):
+    exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), _f)).read())
+
 # ---------------------------------------------------------------- helpers
 def nav():
     return f"""
@@ -191,6 +206,7 @@ def nav():
     <a href="/get-out-of-mca/">Get Out of MCAs</a>
     <a href="/get-loan-ready/">Loan Types</a>
     <a href="/loan-calculator/">Calculator</a>
+    <a href="/blog/">Guides</a>
     <a href="/results/">Results</a>
     <a href="/contact/">Visit Us</a>
     <a class="btn btn-gold btn-sm" href="/bankable-check/">Am I Bankable?</a>
@@ -217,13 +233,15 @@ def footer():
       <li><a href="/get-out-of-mca/">Get Out of MCAs</a></li>
       <li><a href="/lending-has-changed/">How Lending Has Changed</a></li>
       <li><a href="/loan-calculator/">Loan Calculator</a></li>
+      <li><a href="/grow-your-business/">Grow Your Business</a></li>
+      <li><a href="/blog/">Guides &amp; Articles</a></li>
       <li><a href="/results/">Client Results</a></li>
     </ul></div>
     <div><h4>Get Ready For</h4><ul>{loans}<li><a href="/get-loan-ready/">All loan types</a></li></ul></div>
     <div><h4>Areas We Serve</h4><ul><li><a href="/">North Palm Beach</a></li>{areas}</ul></div>
   </div>
   <div class="legal">
-    <p>Loan Ready is a program of iFinancial. We do not guarantee any specific credit score increase, deletion, or loan approval. Accurate and timely information cannot be removed from a credit report. You have the right to dispute inaccurate information directly with the credit bureaus at no cost. Funding is subject to lender approval. Individual results vary.</p>
+    <p>Loan Ready is a program of iFinancial (formerly Finance Solutions Group). We do not guarantee any specific credit score increase, deletion, or loan approval. Accurate and timely information cannot be removed from a credit report. You have the right to dispute inaccurate information directly with the credit bureaus at no cost. Funding is subject to lender approval. Individual results vary.</p>
     <p><a href="/your-rights/">Your Rights &amp; Disclosures</a> · <a href="/privacy-policy/">Privacy Policy</a> · <a href="https://goifinancial.com">goifinancial.com</a> · © {datetime.date.today().year} iFinancial</p>
   </div>
 </div></footer>
@@ -252,7 +270,10 @@ def local_business_schema():
             "opens": "09:00", "closes": "17:30"}],
         "areaServed": ["North Palm Beach", "Palm Beach Gardens", "Jupiter", "West Palm Beach", "Riviera Beach",
                        "Lake Park", "Juno Beach", "Tequesta", "Palm Beach County"],
-        "parentOrganization": {"@type": "Organization", "name": "iFinancial", "url": "https://goifinancial.com"},
+        "parentOrganization": {"@type": "Organization", "name": "iFinancial", "alternateName": "Finance Solutions Group", "url": "https://goifinancial.com"},
+        "alternateName": ["Loan Ready", "Loan Ready by iFinancial"],
+        "knowsAbout": ["Credit repair", "Business loans", "SBA loans", "Merchant cash advance refinancing", "Small business bookkeeping", "Tax planning", "Business credit"],
+        "hasMap": "https://www.google.com/maps/search/?api=1&query=751+Northlake+Blvd+Suite+2D+North+Palm+Beach+FL+33408",
         "sameAs": ["https://goifinancial.com"],
     }
 
@@ -284,7 +305,14 @@ def page(path, title, desc, body, schema=None, priority="0.7", noindex=False):
 <meta property="og:title" content="{title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{url}">
-<meta property="og:image" content="{DOMAIN}/assets/ifinancial-logo.png">
+<meta property="og:image" content="{DOMAIN}/assets/og-loan-ready.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:site_name" content="Loan Ready by iFinancial">
+<meta property="og:locale" content="{'es_US' if LANG == 'es' else 'en_US'}">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="geo.region" content="US-FL">
+<meta name="geo.placename" content="North Palm Beach">
 <link rel="icon" type="image/png" href="/favicon.png">
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -382,7 +410,7 @@ def faq_block(faqs):
     return '<div class="faq">' + "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faqs) + "</div>"
 
 def visit_block():
-    return f"""<section><div class="wrap grid-2">
+    return f"""<section class="alt"><div class="wrap grid-2">
 <div><div class="eyebrow">Visit the office</div><h2>Sit down with us on Northlake Blvd.</h2>
 <p>Bring your questions, or just bring your phone. We'll pull your reports together and walk through every item with you. Prefer not to drive? We do phone and video appointments too.</p>
 <div class="visit-card"><dl>
@@ -405,6 +433,7 @@ def sidebar(current=None):
 <a class="btn btn-gold" style="width:100%" href="/free-loan-score/">Start My Loan Score</a>
 <a class="btn btn-line" style="width:100%;margin-top:10px" {BOOK_A}>Book a Call Now</a>
 <p style="margin:14px 0 0;font-size:.92rem">Or call <a style="color:#fff" href="tel:{TEL}">{PHONE}</a></p></div>
+<div class="side-box"><h3>Guides</h3><ul>{"".join(f'<li><a href="/blog/{p["slug"]}/">{p["tag"]}: {p["h1"][0].upper() + p["h1"][1:]}</a></li>' for p in BLOG[:6])}</ul></div>
 <div class="side-box"><h3>Get ready for</h3><ul>{others}</ul></div>
 </aside>"""
 
@@ -581,7 +610,13 @@ home = f"""
 <div>{cost_block()}</div>
 </div></section>
 
-<section class="alt"><div class="wrap grid-2">
+<section class="alt"><div class="wrap">
+<div class="section-head"><div class="eyebrow">Guides</div><h2>Know before you apply.</h2><p>Straight talk on credit, business loans, SBA, MCAs and growth, from the team that's funded $50M+ for local owners.</p></div>
+{guide_cards(n=6)}
+<div class="btn-row" style="margin-top:24px"><a class="btn btn-navy" href="/blog/">All guides →</a></div>
+</div></section>
+
+<section><div class="wrap grid-2">
 <div><div class="eyebrow">Questions</div><h2>Straight answers.</h2><p>Ask us anything else at <a href="tel:{TEL}">{PHONE}</a>.</p></div>
 {faq_block(FAQS)}
 </div></section>
@@ -695,9 +730,9 @@ for p in PRODUCTS:
     page(path, d["title"], d["desc"], body, [service, faq_schema(d["faqs"]), breadcrumb_schema([("Home", "/"), (p["name"], path)])], priority="0.9")
 
 # ---------------------------------------------------------------- LOAN HUB + PAGES
-hub = page_hero([("Home", "/"), ("Get Loan Ready", "/get-loan-ready/")], "Get ready for every type of loan.",
-                "Every lender checks something different. Find your loan and see what they look at, where applicants get stuck, and how we fix it.",
-                eyebrow="Loan readiness") + f"""
+hub = page_hero([("Home", "/"), ("Business Loans", "/get-loan-ready/")], "Business loans in Palm Beach County, done the right way.",
+                "SBA, lines of credit, term loans, equipment, commercial real estate, asset-based and same-day funding. Every lender checks something different. See what they look at, where owners get stuck, and how we get you approved.",
+                eyebrow="Business loans · Loan readiness") + f"""
 <section><div class="wrap">{loan_tiles()}</div></section>
 <section class="alt"><div class="wrap grid-2">
 <div><div class="eyebrow">One file, every lender</div><h2>Apply once, the right way.</h2>
@@ -705,8 +740,8 @@ hub = page_hero([("Home", "/"), ("Get Loan Ready", "/get-loan-ready/")], "Get re
 <div><h3>Every Loan Ready file includes</h3><ul class="checks"><li>Three-bureau credit review and repair plan</li><li>Current P&amp;L and balance sheet</li><li>Tax returns that tie to the books</li><li>Debt service coverage calculation</li><li>Bank statement review</li><li>Personal financial statement</li></ul></div>
 </div></section>
 {band("Not sure which loan fits?", "Tell us what you need the money for. We'll tell you which loan fits and what it will take to qualify.")}"""
-page("/get-loan-ready/", "Get Loan Ready — SBA, Equipment, Real Estate & More | Loan Ready by iFinancial",
-     "What lenders check for SBA, equipment, line of credit, term, commercial real estate, asset-based and mortgage loans, and how we get you ready. North Palm Beach, FL.",
+page("/get-loan-ready/", "Business Loans in Palm Beach County: SBA, Lines of Credit, Equipment | Loan Ready",
+     "Business loans for Palm Beach County and Treasure Coast owners: SBA, lines of credit, term loans, equipment, commercial real estate. We get your file bankable, then iFinancial gets you funded.",
      hub, [breadcrumb_schema([("Home", "/"), ("Get Loan Ready", "/get-loan-ready/")])], priority="0.9")
 
 for slug, name, sub, intro, checks, stuck, fix in LOANS:
@@ -746,6 +781,7 @@ for slug, name, intro, directions in AREAS:
 <div class="btn-row"><a class="btn btn-navy" href="https://www.google.com/maps/dir/?api=1&destination={MAPQ}" target="_blank" rel="noopener">Directions</a><a class="btn btn-gold" {BOOK_A}>Book a Call</a></div></div>
 <iframe class="map" title="Map to our office" loading="lazy" src="https://www.google.com/maps?q={MAPQ}&output=embed"></iframe>
 </div></section>
+<section class="alt"><div class="wrap"><div class="section-head"><div class="eyebrow">Guides for {name} owners</div><h2>Know before you apply.</h2></div>{guide_cards(n=3)}</div></section>
 {band(f"{name} owners: find out what's blocking your approval.", "Free Loan Score. No obligation.")}"""
     page(path, f"Credit Repair & Business Loan Readiness in {name}, FL | Loan Ready",
          f"Credit repair, bookkeeping and tax planning for {name} business owners and families. Get ready for SBA, equipment, real estate and mortgage loans. Office on Northlake Blvd.",
@@ -848,6 +884,8 @@ body = page_hero([("Home", "/"), ("Lending Has Changed", "/lending-has-changed/"
 <h2>MCAs are underwriting like banks used to</h2>
 <p>Merchant cash advances used to be the easy yes. That's changing. In our experience, many funders now want credit in the 620s and up, more documentation, cleaner bank statements, and stricter limits on stacking. If short-term money is getting harder to get, waiting until you're desperate is the most expensive plan there is.</p>
 
+<h2>SBA money can't pay off an MCA anymore</h2>
+<p>Under SBA rules in effect since 2025, SBA loan proceeds can't be used to refinance merchant cash advances. The SBA also raised the minimum small-business credit score for its streamlined 7(a) small loans (now capped at $350,000), restored its upfront guaranty fees, and requires businesses to be 100% owned by U.S. citizens, nationals or lawful permanent residents. Owners who planned to "just get an SBA loan" to clear their advances need a different first step: conventional financing first, SBA after.</p>
 <h2>Taxes vs. borrowing power</h2>
 <p>Lenders size your loan off documented income. Writing off everything saves on taxes, but it can make your business look like it can't afford a payment. Proper tax planning balances both. You keep more from Uncle Sam and still qualify for the money you need. <a href="/bookkeeping-tax-planning/">See how our tax planning works →</a></p>
 
@@ -870,7 +908,7 @@ page("/lending-has-changed/", "Why Bank Loans Are Harder to Get in 2026, and How
 
 # ---------------------------------------------------------------- GET OUT OF MCA
 mca_faqs = [
-    ("Can an SBA or bank loan pay off my MCA?", "In some cases, yes. Banks and the SBA can refinance existing business debt when the numbers and the file support it. Lenders look closely at why the advances were taken and whether your cash flow covers the new payment. We get the file to that point."),
+    ("Can an SBA or bank loan pay off my MCA?", "Not with SBA money right now. Under SBA rules in effect since 2025, SBA loan proceeds can't be used to pay off merchant cash advances. Conventional bank loans, lines of credit and term loans can, when the numbers and the file support it. That's why our path pays off MCAs first with lower-cost conventional financing, then moves you into SBA for growth. Lenders look closely at why the advances were taken and whether your cash flow covers the new payment. We get the file to that point."),
     ("What if I have three or four positions open?", "It's common, and it's fixable, but not overnight. Step one is to stop adding positions. Then we work out the order to retire them and what the bank needs to see from your statements before we submit."),
     ("Do I have to stop using MCAs completely?", "Not on day one. If you need capital now, iFinancial can help structure it so it doesn't trap you. The goal is that every round costs less than the last, until you're in bank and SBA money."),
 ]
@@ -898,7 +936,7 @@ body = page_hero([("Home", "/"), ("Get Out of MCAs", "/get-out-of-mca/")],
 <h2>Businesses we've moved out of MCAs</h2>
 {cases_block()}
 <h2>Common questions</h2>{faq_block(mca_faqs)}
-<p class="fineprint">Refinancing depends on lender approval, your cash flow and your full financial profile. Not every advance can be refinanced into bank or SBA debt.</p>
+<p class="fineprint">Refinancing depends on lender approval, your cash flow and your full financial profile. Under current SBA rules, SBA loan proceeds can't be used to refinance merchant cash advances. Not every advance can be refinanced with conventional bank debt either.</p>
 </article>{sidebar()}</div></section>
 {mca_compare(CALC_EN)}
 {band("Every month in an MCA costs you. Let's plan your way out.", "Book a call today. Bring your statements, and leave with a plan.")}"""
@@ -914,8 +952,9 @@ calc_page(CALC_EN)
 # ---------------------------------------------------------------- CONTACT / ABOUT
 body = page_hero([("Home", "/"), ("Visit Us", "/contact/")], "Visit Loan Ready in North Palm Beach.",
                  f"{ADDR_ONE}. Open {HOURS}.", eyebrow="Contact") + visit_block() + f"""
-<section class="alt"><div class="wrap grid-2">
+<section><div class="wrap grid-2">
 <div><div class="eyebrow">Who we are</div><h2>Part of iFinancial. Built to close the gap.</h2>
+<p><b>iFinancial, formerly Finance Solutions Group.</b> Same team, same office, new name.</p>
 {stats_block()}
 <p>iFinancial bridges the gap between small business owners and the bankers who lend to them. We arrange everything from same-day funding to SBA, asset-based and long-term loans.</p>
 <p>Loan Ready is the other half of that work. It's for the owners and families who aren't approvable yet. Our in-house credit team, bookkeeping and tax planning get the file ready, and then iFinancial gets it funded.</p></div>
@@ -961,6 +1000,9 @@ page("/privacy-policy/", "Privacy Policy | Loan Ready by iFinancial", "Privacy p
 
 page("/404.html", "Page Not Found | Loan Ready", "Page not found.",
      page_hero([("Home", "/"), ("Not found", "/404.html")], "That page isn't here.", "Try the menu above, or start with a free Loan Score."), noindex=True)
+
+# ---------------------------------------------------------------- BLOG + GROW
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'blog.py')).read())
 
 # ---------------------------------------------------------------- SPANISH
 exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'content_es.py')).read())
